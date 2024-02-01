@@ -242,6 +242,30 @@ namespace KursovaRabota.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ApplicationUserCompetition",
+                columns: table => new
+                {
+                    CompetitionsId = table.Column<int>(type: "int", nullable: false),
+                    UsersId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ApplicationUserCompetition", x => new { x.CompetitionsId, x.UsersId });
+                    table.ForeignKey(
+                        name: "FK_ApplicationUserCompetition_AspNetUsers_UsersId",
+                        column: x => x.UsersId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ApplicationUserCompetition_Competitions_CompetitionsId",
+                        column: x => x.CompetitionsId,
+                        principalTable: "Competitions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
@@ -255,12 +279,17 @@ namespace KursovaRabota.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "Class", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "9de92530-126f-44fe-8846-f5099e0e1cc3", 0, null, "0ca3b287-8453-4c3c-afdd-f6c8379275bd", "admin@email.com", false, "admin", "admin", false, null, "admin@email.com", "admin", "AQAAAAIAAYagAAAAEE/dnw2ljzQ37b+unRRHvoj3zILnCbZjXXEE57t26MazoJEQMde93ImNLGcujHOw8g==", null, false, "49e5b925-f932-4c6b-b169-0f71f125628b", false, "admin" });
+                values: new object[] { "9de92530-126f-44fe-8846-f5099e0e1cc3", 0, null, "f8615076-33b2-472b-bc3f-c93b8e8d778c", "admin@email.com", false, "admin", "admin", false, null, "admin@email.com", "admin", "AQAAAAIAAYagAAAAELlh9J5r1ZMMAPOx3qL5igq7h68FnHSksRFXWlU97cn3zkhLt4OyaqUmcA0IwCxVPQ==", null, false, "e54ea66a-ba5e-4bab-8a21-b893974516e5", false, "admin" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[] { "6160e632-043f-4e6b-aba3-5e3d4d32d934", "9de92530-126f-44fe-8846-f5099e0e1cc3" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationUserCompetition_UsersId",
+                table: "ApplicationUserCompetition",
+                column: "UsersId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ApplicationUserSubject_UsersId",
@@ -320,6 +349,9 @@ namespace KursovaRabota.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ApplicationUserCompetition");
+
             migrationBuilder.DropTable(
                 name: "ApplicationUserSubject");
 

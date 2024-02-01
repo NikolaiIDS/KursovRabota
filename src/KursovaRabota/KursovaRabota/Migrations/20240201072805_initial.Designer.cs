@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KursovaRabota.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240131212046_initial")]
+    [Migration("20240201072805_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -24,6 +24,21 @@ namespace KursovaRabota.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("ApplicationUserCompetition", b =>
+                {
+                    b.Property<int>("CompetitionsId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UsersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("CompetitionsId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("ApplicationUserCompetition");
+                });
 
             modelBuilder.Entity("ApplicationUserSubject", b =>
                 {
@@ -123,7 +138,7 @@ namespace KursovaRabota.Migrations
                         {
                             Id = "9de92530-126f-44fe-8846-f5099e0e1cc3",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0ca3b287-8453-4c3c-afdd-f6c8379275bd",
+                            ConcurrencyStamp = "f8615076-33b2-472b-bc3f-c93b8e8d778c",
                             Email = "admin@email.com",
                             EmailConfirmed = false,
                             FirstName = "admin",
@@ -131,9 +146,9 @@ namespace KursovaRabota.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "admin@email.com",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAIAAYagAAAAEE/dnw2ljzQ37b+unRRHvoj3zILnCbZjXXEE57t26MazoJEQMde93ImNLGcujHOw8g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELlh9J5r1ZMMAPOx3qL5igq7h68FnHSksRFXWlU97cn3zkhLt4OyaqUmcA0IwCxVPQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "49e5b925-f932-4c6b-b169-0f71f125628b",
+                            SecurityStamp = "e54ea66a-ba5e-4bab-8a21-b893974516e5",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -386,6 +401,21 @@ namespace KursovaRabota.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("ApplicationUserCompetition", b =>
+                {
+                    b.HasOne("KursovaRabota.Data.Models.Competition", null)
+                        .WithMany()
+                        .HasForeignKey("CompetitionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KursovaRabota.Data.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ApplicationUserSubject", b =>

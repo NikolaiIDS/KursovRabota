@@ -20,5 +20,7 @@ namespace KursovaRabota.Data.Models
 
 
         public List<Subject> TeacherSubjects { get; set; } = null!;
+
+        public List<Competition> Competitions { get; set; } = null!;
     }
 }

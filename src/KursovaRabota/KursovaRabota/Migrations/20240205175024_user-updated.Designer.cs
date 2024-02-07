@@ -4,6 +4,7 @@ using KursovaRabota.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KursovaRabota.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240205175024_user-updated")]
+    partial class userupdated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -138,8 +141,8 @@ namespace KursovaRabota.Migrations
                         {
                             Id = "9de92530-126f-44fe-8846-f5099e0e1cc3",
                             AccessFailedCount = 0,
-                            Approved = true,
-                            ConcurrencyStamp = "0aa229f3-0b11-4c81-bd63-f77b1756f5fb",
+                            Approved = false,
+                            ConcurrencyStamp = "5769cbe8-db6c-459c-9812-79e5748ac421",
                             Email = "admin@email.com",
                             EmailConfirmed = false,
                             FirstName = "admin",
@@ -147,9 +150,9 @@ namespace KursovaRabota.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "admin@email.com",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGP4Ehc9PN/sdLqei1nrr5jC3s+0CSNSjoSYBmSKvXPtNl+aQ3YYRXEy3Z8+jl3WsQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECz8Z2U7WjsWTAmDkU4lvAwH4mlgkaXq3mHs/POd9ZtmxDYCZIWaoyjvUPvIvFG40w==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2aafadc4-b301-41cc-b7ee-16ce79ba046e",
+                            SecurityStamp = "3d3c0343-81fa-4d9b-a937-6ed8800fcc3b",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });

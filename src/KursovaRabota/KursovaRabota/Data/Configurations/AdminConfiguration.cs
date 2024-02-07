@@ -22,6 +22,7 @@ namespace KursovaRabota.Data.Configurations
                 UserName = "admin",
                 NormalizedEmail = "admin@email.com".Normalize(),
                 NormalizedUserName = "admin".Normalize(),
+                Approved = true
             };
             var passwordHasher = new PasswordHasher<ApplicationUser>();
             admin.PasswordHash = passwordHasher.HashPassword(null, "Aa123456!");

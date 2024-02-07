@@ -1,5 +1,7 @@
 using KursovaRabota.Data;
 using KursovaRabota.Data.Models;
+using KursovaRabota.Services;
+using KursovaRabota.Services.Contracts;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +24,8 @@ namespace KursovaRabota
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddScoped<IUserService, UserService>();
 
             var app = builder.Build();
 

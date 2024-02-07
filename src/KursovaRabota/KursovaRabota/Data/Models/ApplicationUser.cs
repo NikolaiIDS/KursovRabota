@@ -18,6 +18,8 @@ namespace KursovaRabota.Data.Models
         [MaxLength(50)]
         public string? Class { get; set; } = null!;
 
+        public bool Approved { get; set; }
+
 
         public List<Subject> TeacherSubjects { get; set; } = null!;
 

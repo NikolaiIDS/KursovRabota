@@ -1,0 +1,87 @@
+﻿@model KursovaRabota.ViewModels.UpdateUserViewModel
+
+<h2>Детайли за потребителя</h2>
+
+<form asp-action="UpdateUser" asp-controller="User" method="post">
+    <div class="form-group">
+        <label asp-for="FirstName">Лично име</label>
+        <input asp-for="FirstName" class="form-control" />
+        <span asp-validation-for="FirstName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="LastName">Фамилия</label>
+        <input asp-for="LastName" class="form-control" />
+        <span asp-validation-for="LastName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="UserName">Потребителско име</label>
+        <input asp-for="UserName" class="form-control" />
+        <span asp-validation-for="UserName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Email">Имейл</label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PhoneNumber">Телефонен номер</label>
+        <input asp-for="PhoneNumber" class="form-control" />
+        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="DesiredRole">Желана роля</label>
+        <select asp-for="DesiredRole" class="form-control" id="desiredRole">
+            <option value="Teacher">Учител</option>
+            <option value="Student">Студент</option>
+        </select>
+        <span asp-validation-for="DesiredRole" class="text-danger"></span>
+    </div>
+
+    @if (Model.TeacherSubjects != null && Model.TeacherSubjects.Count > 0)
+    {
+        <div class="form-group" id="subjectsDiv">
+            <label>Изберете предмети:</label>
+            <br />
+            @foreach (var subject in Model.TeacherSubjects)
+            {
+                <input type="checkbox" name="SelectedSubjectIds" value="@subject.Id" id="@("subject_" + subject.Id)" @(Model.SelectedSubjectIds != null && Model.SelectedSubjectIds.Contains(subject.Id) ? "checked" : "") />
+                <label for="@("subject_" + subject.Id)">@subject.SubjectName</label>
+
+                <br />
+            }
+        </div>
+    }
+
+    <div class="form-group" id="classDiv">
+        <label asp-for="Class">Клас</label>
+        <input asp-for="Class" class="form-control" />
+        <span asp-validation-for="Class" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Обнови</button>
+</form>
+
+<script>
+    document.getElementById('desiredRole').addEventListener('change', function () {
+        var selectedRole = this.value;
+
+        var subjectsDiv = document.getElementById('subjectsDiv');
+        if (selectedRole === 'Teacher') {
+            subjectsDiv.style.display = 'block';
+        } else {
+            subjectsDiv.style.display = 'none';
+        }
+
+        var classDiv = document.getElementById('classDiv');
+        if (selectedRole === 'Student') {
+            classDiv.style.display = 'block';
+        } else {
+            classDiv.style.display = 'none';
+        }
+    });
+</script>

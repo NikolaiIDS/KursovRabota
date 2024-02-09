@@ -29,17 +29,25 @@
                     </ul>
                     @if (User.Identity.IsAuthenticated)
                     {
-                       <div>
-                        <p>Hello @User.Identity.Name</p>
+                        <div>
+                            <p>Hello @User.Identity.Name</p>
                             <a asp-controller="User" asp-action="Logout" class="btn btn-primary">Logout</a>
                         </div>
                     }
                     else
                     {
                         <a asp-controller="User" asp-action="Login" class="btn btn-primary">Login</a>
-
+                        <a asp-controller="User" asp-action="Register" class="btn btn-primary">Register</a>
                     }
-                    
+                    @if(User.IsInRole("Admin")|| User.IsInRole("Teacher"))
+                    {
+                        <a asp-controller="Subject" asp-action="Add" class="btn btn-primary">Add Subject</a>
+                    }
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-controller="User" asp-action="GetAllUnregistered" class="btn btn-primary">Нерегистрирани потребители</a>
+                        <a asp-controller="User" asp-action="GetAll" class="btn btn-primary">Регистрирани потребители</a>
+                    }
 
                 </div>
             </div>

@@ -1,0 +1,23 @@
+﻿@using KursovaRabota.ViewModels
+@model List<DisplayUserViewModel>
+
+<h2>User Management</h2>
+
+@foreach (var user in Model)
+{
+    <div class="card" style="width: 18rem; margin-bottom: 20px;">
+        <div class="card-body">
+            <h5 class="card-title">@($"{user.FirstName} {user.LastName}")</h5>
+            <p class="card-text">
+                @($"UserName: {user.UserName}<br/>Email: {user.Email}<br/>Phone: {user.PhoneNumber}")
+            </p>
+            @if (!string.IsNullOrEmpty(user.DesiredRole))
+            {
+                <p class="card-text">Desired Role: @user.DesiredRole</p>
+            }
+            <form  method="post">
+                <button asp-action="ApproveUser" asp-controller="User" type="submit" class="btn btn-primary" asp-route-id="@user.Id">Approve</button>
+            </form>
+        </div>
+    </div>
+}

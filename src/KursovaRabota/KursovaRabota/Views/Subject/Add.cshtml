@@ -1,0 +1,11 @@
+﻿@model KursovaRabota.ViewModels.SubjectViewModel
+
+<form asp-action="Add" method="post">
+    <div class="form-group">
+        <label asp-for="SubjectName"></label>
+        <input asp-for="SubjectName" class="form-control" />
+        <span asp-validation-for="SubjectName" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add Subject</button>
+</form>

@@ -1,5 +1,6 @@
 using KursovaRabota.Data;
 using KursovaRabota.Data.Models;
+using KursovaRabota.Extensions;
 using KursovaRabota.Services;
 using KursovaRabota.Services.Contracts;
 
@@ -26,6 +27,8 @@ namespace KursovaRabota
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<ISubjectService, SubjectService>();
+
 
             var app = builder.Build();
 
@@ -41,6 +44,7 @@ namespace KursovaRabota
                 app.UseHsts();
             }
 
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -52,6 +56,8 @@ namespace KursovaRabota
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
+
+            app.SeedRoles();
 
             app.Run();
         }

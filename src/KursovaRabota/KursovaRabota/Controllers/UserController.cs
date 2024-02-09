@@ -1,4 +1,6 @@
-﻿using KursovaRabota.Data;
+﻿using System.Reflection.Metadata.Ecma335;
+
+using KursovaRabota.Data;
 using KursovaRabota.Data.Models;
 using KursovaRabota.Services.Contracts;
 using KursovaRabota.ViewModels;
@@ -7,6 +9,7 @@ using KursovaRabota.ViewModels.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace KursovaRabota.Controllers
 {
@@ -37,6 +40,7 @@ namespace KursovaRabota.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             var result = await userService.Login(model);
@@ -73,7 +77,11 @@ namespace KursovaRabota.Controllers
         [HttpGet]
         public async Task<IActionResult> Register()
         {
-            return View();
+            var forView = new RegisterViewModel
+            {
+                TeacherSubjects = await context.Subjects.ToListAsync()
+            };
+            return View(forView);
         }
 
         [HttpPost]
@@ -92,16 +100,26 @@ namespace KursovaRabota.Controllers
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Class = model.Class,
-                PhoneNumber = model.PhoneNumber
+                PhoneNumber = model.PhoneNumber,
+
             };
 
+            if (model.DesiredRole == "Teacher")
+            {
+                user.TeacherSubjects = new List<Subject>();
+                foreach (var item in model.SelectedSubjectIds)
+                {
+                    user.TeacherSubjects.Add(await context.Subjects.Where(x => x.Id == item).FirstOrDefaultAsync());
+                }
+            }
+
             var result = await userManager.CreateAsync(user, model.Password);
-            
+
 
             if (result.Succeeded)
             {
                 await userManager.AddToRoleAsync(user, model.DesiredRole);
-                TempData["success"] = "Successful login!";
+                TempData["success"] = "Successful registration!";
                 return RedirectToAction(nameof(Login));
             }
 
@@ -112,5 +130,94 @@ namespace KursovaRabota.Controllers
 
             return View(model);
         }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task ApproveUser(Guid id)
+        {
+            await userService.Approve(id);
+
+            await context.SaveChangesAsync();
+            TempData["success"] = $"Successfuly authenticated !";
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetAllUnregistered()
+        {
+            var users = await userService.GetAllUnregistered();
+
+            return View(users);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetAll()
+        {
+            var users = await userService.GetAll();
+
+            return View(users);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateUser(Guid Id)
+        {
+            var user = await userManager.FindByIdAsync(Id.ToString());
+
+            var roles = await userManager.GetRolesAsync(user);
+
+            var forView = new UpdateUserViewModel
+            {
+                Id = Guid.Parse(user.Id),
+                UserName = user.UserName,
+                PhoneNumber = user.PhoneNumber,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                DesiredRole = roles[0],
+                TeacherSubjects = await context.Subjects.ToListAsync()
+            };
+            return View(forView);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateUser(Guid Id, UpdateUserViewModel model)
+        {
+            if (Id != null) 
+            { 
+                model.Id = Id;
+                if (ModelState.IsValid)
+                {
+                    model.Id = Id;
+                    await userService.Update(model);
+                    TempData["success"] = $"Успешно променихте данните на {model.FirstName} {model.LastName}";
+                    return RedirectToAction("GetAll");
+                }
+                else
+                {
+                    TempData["error"] = $"Възникна грешка!";
+                    return RedirectToAction("GetAll");
+                }
+            }
+            else
+            {
+                TempData["error"] = $"Възникна грешка!";
+                return RedirectToAction("GetAll");
+            }
+        }
+
+
+        [HttpPost]
+        [Authorize(Roles = "Admin, Teacher")]
+        public async Task Delete(Guid Id)
+        {
+            if (Id!=null)
+            {
+                await userService.Delete(Id);
+            }
+        }
+
     }
 }

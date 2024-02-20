@@ -4,7 +4,7 @@
 
 <form asp-action="UpdateUser" asp-controller="User" method="post">
     <div class="form-group">
-        <label asp-for="FirstName">Лично име</label>
+        <label asp-for="FirstName">Име</label>
         <input asp-for="FirstName" class="form-control" />
         <span asp-validation-for="FirstName" class="text-danger"></span>
     </div>
@@ -37,9 +37,15 @@
         <label asp-for="DesiredRole">Желана роля</label>
         <select asp-for="DesiredRole" class="form-control" id="desiredRole">
             <option value="Teacher">Учител</option>
-            <option value="Student">Студент</option>
+            <option value="Student">Ученик</option>
         </select>
         <span asp-validation-for="DesiredRole" class="text-danger"></span>
+    </div>
+
+    <div class="form-group" id="classDiv">
+        <label asp-for="Class">Клас</label>
+        <input asp-for="Class" class="form-control"/>
+        <span asp-validation-for="Class" class="text-danger"></span>
     </div>
 
     @if (Model.TeacherSubjects != null && Model.TeacherSubjects.Count > 0)
@@ -51,37 +57,62 @@
             {
                 <input type="checkbox" name="SelectedSubjectIds" value="@subject.Id" id="@("subject_" + subject.Id)" @(Model.SelectedSubjectIds != null && Model.SelectedSubjectIds.Contains(subject.Id) ? "checked" : "") />
                 <label for="@("subject_" + subject.Id)">@subject.SubjectName</label>
-
                 <br />
             }
         </div>
     }
-
-    <div class="form-group" id="classDiv">
-        <label asp-for="Class">Клас</label>
-        <input asp-for="Class" class="form-control" />
-        <span asp-validation-for="Class" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Обнови</button>
 </form>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var desiredRoleSelect = document.getElementById('desiredRole');
+        var selectedRole = '@Model.DesiredRole'; // Get the user's role from the model
+
+        // Set the default value to the user's role
+        desiredRoleSelect.value = selectedRole;
+
+        // Trigger the change event to show/hide elements based on the default value
+        var changeEvent = new Event('change');
+        desiredRoleSelect.dispatchEvent(changeEvent);
+
+        // Check the default value and update display
+        var subjectsDiv = document.getElementById('subjectsDiv');
+        var classDiv = document.getElementById('classDiv');
+
+        if (selectedRole === 'Teacher') {
+            subjectsDiv.style.display = 'block';
+            classDiv.style.display = 'none';
+        } else if (selectedRole === 'Student') {
+            subjectsDiv.style.display = 'none';
+            classDiv.style.display = 'block';
+        } else {
+            subjectsDiv.style.display = 'none';
+            classDiv.style.display = 'none';
+        }
+    });
+
     document.getElementById('desiredRole').addEventListener('change', function () {
         var selectedRole = this.value;
 
         var subjectsDiv = document.getElementById('subjectsDiv');
+        var classDiv = document.getElementById('classDiv');
+
         if (selectedRole === 'Teacher') {
             subjectsDiv.style.display = 'block';
-        } else {
+            classDiv.style.display = 'none';
+        } else if (selectedRole === 'Student') {
             subjectsDiv.style.display = 'none';
-        }
-
-        var classDiv = document.getElementById('classDiv');
-        if (selectedRole === 'Student') {
             classDiv.style.display = 'block';
         } else {
+            subjectsDiv.style.display = 'none';
             classDiv.style.display = 'none';
         }
     });
 </script>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    }
+
+

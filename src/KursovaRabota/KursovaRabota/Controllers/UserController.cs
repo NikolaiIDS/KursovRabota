@@ -131,14 +131,15 @@ namespace KursovaRabota.Controllers
             return View(model);
         }
 
-        [HttpPost]
+        [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task ApproveUser(Guid id)
+        public async Task<IActionResult> ApproveUser(Guid id)
         {
             await userService.Approve(id);
 
             await context.SaveChangesAsync();
             TempData["success"] = $"Successfuly authenticated !";
+            return RedirectToAction("GetAllUnregistered");
         }
 
         [HttpGet]
@@ -167,6 +168,7 @@ namespace KursovaRabota.Controllers
 
             var roles = await userManager.GetRolesAsync(user);
 
+
             var forView = new UpdateUserViewModel
             {
                 Id = Guid.Parse(user.Id),
@@ -175,9 +177,17 @@ namespace KursovaRabota.Controllers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
-                DesiredRole = roles[0],
+                DesiredRole = roles[0].ToString(),
                 TeacherSubjects = await context.Subjects.ToListAsync()
             };
+            if (user.TeacherSubjects!= null)
+            {
+                foreach (var subject in user.TeacherSubjects) 
+                {
+                    forView.SelectedSubjectIds.Add(subject.Id);
+                }
+            }
+            
             return View(forView);
         }
 
@@ -190,7 +200,7 @@ namespace KursovaRabota.Controllers
                 model.Id = Id;
                 if (ModelState.IsValid)
                 {
-                    model.Id = Id;
+
                     await userService.Update(model);
                     TempData["success"] = $"Успешно променихте данните на {model.FirstName} {model.LastName}";
                     return RedirectToAction("GetAll");
@@ -209,14 +219,19 @@ namespace KursovaRabota.Controllers
         }
 
 
-        [HttpPost]
-        [Authorize(Roles = "Admin, Teacher")]
-        public async Task Delete(Guid Id)
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(Guid Id)
         {
             if (Id!=null)
             {
                 await userService.Delete(Id);
+                await context.SaveChangesAsync();
+                TempData["success"] = $"Изтрихте потребител успешно!";
+                return RedirectToAction("GetAll");
             }
+            TempData["error"] = $"Възникна грешка!";
+            return RedirectToAction("GetAll");
         }
 
     }

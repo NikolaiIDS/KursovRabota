@@ -3,6 +3,8 @@ using KursovaRabota.Data.Models;
 using KursovaRabota.Services.Contracts;
 using KursovaRabota.ViewModels;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace KursovaRabota.Services
 {
     public class SubjectService : ISubjectService
@@ -22,6 +24,23 @@ namespace KursovaRabota.Services
             };
             await context.AddAsync(forDb);
             await context.SaveChangesAsync();
+        }
+
+        public async Task Delete(Guid id)
+        {
+            context.Remove(await context.Subjects.FindAsync(id));
+            await context.SaveChangesAsync();   
+        }
+
+        public async Task<List<SubjectViewModel>> GetAll()
+        {
+            var list = await context.Subjects.Select(x => new SubjectViewModel 
+            { 
+                Id = x.Id.ToString(),
+                SubjectName = x.SubjectName
+            }).ToListAsync();
+
+            return list;
         }
     }
 }

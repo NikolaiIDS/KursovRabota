@@ -57,6 +57,7 @@ namespace KursovaRabota.Services
         public async Task<List<DisplayUserViewModel>> GetAll()
         {
             var users = await context.Users
+                .Where(x => x.Approved == true)
                 .Select(x => new DisplayUserViewModel
                 {
                     Id = Guid.Parse(x.Id),
@@ -106,7 +107,7 @@ namespace KursovaRabota.Services
 
         public async Task Update(UpdateUserViewModel model)
         {
-            if (model.SelectedSubjectIds.Count != 0)
+            if (model.SelectedSubjectIds != null)
             {
                 model.TeacherSubjects = new List<Subject>();
                 foreach (var item in model.SelectedSubjectIds)
@@ -115,27 +116,20 @@ namespace KursovaRabota.Services
                 }
             }
 
-            var userFromDb = await userManager.FindByIdAsync(model.Id.ToString());
+          
+                var user = await userManager.FindByEmailAsync(model.Email);
+                user.UserName = model.UserName;
+                user.NormalizedUserName = model.UserName.ToUpper();
+                user.PhoneNumber = model.PhoneNumber;
+                user.Email = model.Email;
+                user.NormalizedEmail = model.Email.ToUpper();
+                user.FirstName = model.FirstName;
+                user.LastName = model.LastName;
+                user.TeacherSubjects = model.TeacherSubjects;
 
-            if (userFromDb != null)
-            {
-                userFromDb.UserName = model.UserName;
-                userFromDb.FirstName = model.FirstName;
-                userFromDb.LastName = model.LastName;
-                userFromDb.PhoneNumber = model.PhoneNumber;
-                userFromDb.Email = model.Email;
-                userFromDb.Class = model.Class;
-                userFromDb.TeacherSubjects = model.TeacherSubjects;
-
-                // Remove user from all roles
-                var userRoles = await userManager.GetRolesAsync(userFromDb);
-                await userManager.RemoveFromRolesAsync(userFromDb, userRoles);
-
-                // Add user to the desired role
-                await userManager.AddToRoleAsync(userFromDb, model.DesiredRole);
-
+                context.Update(user);
                 await context.SaveChangesAsync();
-            }
+            
         }
     }
 }

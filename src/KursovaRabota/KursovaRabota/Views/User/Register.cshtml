@@ -1,91 +1,131 @@
 ﻿@using KursovaRabota.ViewModels
 @model RegisterViewModel
-<head>
-    <link rel="stylesheet" href="~/css/login.css" />
-</head>
 
 <div>
     <form id="registerForm" method="post" class="container">
         <fieldset>
-            <legend>Register</legend>
+            <legend>Регистрация</legend>
 
             <div class="form-group">
-                <label for="firstName">First Name:</label>
+                <label for="firstName">Име:</label>
                 <input asp-for="@Model.FirstName" type="text" class="form-control" id="firstName" required>
                 <span asp-validation-for="@Model.FirstName" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label for="lastName">Last Name:</label>
+                <label for="lastName">Фамилия:</label>
                 <input asp-for="@Model.LastName" type="text" class="form-control" id="lastName" required>
                 <span asp-validation-for="@Model.LastName" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label for="class">Class:</label>
-                <input asp-for="@Model.Class" type="text" class="form-control" id="class">
-                <span asp-validation-for="@Model.Class" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label for="userName">Username:</label>
+                <label for="userName">Потребителско име:</label>
                 <input asp-for="@Model.UserName" type="text" class="form-control" id="userName" required>
                 <span asp-validation-for="@Model.UserName" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label for="email">Email:</label>
+                <label for="email">Имейл:</label>
                 <input asp-for="@Model.Email" type="email" class="form-control" id="email" required>
                 <span asp-validation-for="@Model.Email" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label for="phoneNumber">Phone Number:</label>
+                <label for="phoneNumber">Телефонен номер:</label>
                 <input asp-for="@Model.PhoneNumber" type="tel" class="form-control" id="phoneNumber" required>
                 <span asp-validation-for="@Model.PhoneNumber" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label for="password">Password:</label>
+                <label for="password">Парола:</label>
                 <input asp-for="@Model.Password" type="password" class="form-control" id="password" required>
                 <span asp-validation-for="@Model.Password" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label for="confirmPassword">Confirm Password:</label>
+                <label for="confirmPassword">Потвърди парола:</label>
                 <input asp-for="@Model.ConfirmPassword" type="password" class="form-control" id="confirmPassword" required>
                 <span asp-validation-for="@Model.ConfirmPassword" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label for="desiredRole">Desired Role:</label>
+                <label for="desiredRole">Желана Роля:</label>
                 <select asp-for="@Model.DesiredRole" class="form-control" id="desiredRole" required>
-                    <option value="Teacher">Teacher</option>
-                    <option value="Student">Student</option>
+                    <option value="Teacher">Учител</option>
+                    <option value="Student">Ученик</option>
                 </select>
                 <span asp-validation-for="@Model.DesiredRole" class="text-danger"></span>
             </div>
-            @if(Model.TeacherSubjects!=null)
+
+            @if (Model.TeacherSubjects != null && Model.TeacherSubjects.Count > 0)
             {
-                <div>
+                <div class="form-group" id="subjectsDiv">
+                    <label>Изберете предмети:</label>
+                    <br />
                     @foreach (var subject in Model.TeacherSubjects)
                     {
-                        <div>
-                            <input type="checkbox" name="SelectedSubjectIds" value="@subject.Id"
-                            @(Model.SelectedSubjectIds != null && Model.SelectedSubjectIds.Contains(subject.Id) ? "checked" : "") />
-                            <label>@subject.SubjectName</label>
-                        </div>
+                        <input type="checkbox" name="SelectedSubjectIds" value="@subject.Id" id="@("subject_" + subject.Id)" @(Model.SelectedSubjectIds != null && Model.SelectedSubjectIds.Contains(subject.Id) ? "checked" : "") />
+                        <label for="@("subject_" + subject.Id)">@subject.SubjectName</label>
+                        <br />
                     }
                 </div>
-
             }
 
-            <button type="submit" class="btn btn-primary">Register</button>
+            <div class="form-group" id="classDiv">
+                <label asp-for="Class">Клас</label>
+                <input asp-for="Class" class="form-control" />
+                <span asp-validation-for="Class" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Регистрация</button>
         </fieldset>
     </form>
 </div>
 
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var desiredRoleSelect = document.getElementById('desiredRole');
+
+        // Set the default value to 'Teacher'
+        desiredRoleSelect.value = 'Teacher';
+
+        // Trigger the change event to show/hide elements based on the default value
+        var changeEvent = new Event('change');
+        desiredRoleSelect.dispatchEvent(changeEvent);
+
+        // Check the default value and update display
+        var selectedRole = desiredRoleSelect.value;
+        var subjectsDiv = document.getElementById('subjectsDiv');
+        var classDiv = document.getElementById('classDiv');
+
+        if (selectedRole === 'Teacher') {
+            subjectsDiv.style.display = 'block';
+            classDiv.style.display = 'none';
+        } else {
+            subjectsDiv.style.display = 'none';
+            classDiv.style.display = 'none';
+        }
+    });
+
+    document.getElementById('desiredRole').addEventListener('change', function () {
+        var selectedRole = this.value;
+
+        var subjectsDiv = document.getElementById('subjectsDiv');
+        if (selectedRole === 'Teacher') {
+            subjectsDiv.style.display = 'block';
+        } else {
+            subjectsDiv.style.display = 'none';
+        }
+
+        var classDiv = document.getElementById('classDiv');
+        if (selectedRole === 'Student') {
+            classDiv.style.display = 'block';
+        } else {
+            classDiv.style.display = 'none';
+        }
+    });
+</script>

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KursovaRabota.Controllers
 {
-    [Authorize(Roles ="Admin, Teacher")]
+    [Authorize(Roles = "Admin, Teacher")]
     public class SubjectController : Controller
     {
         private protected ISubjectService subjectService;
@@ -24,7 +24,10 @@ namespace KursovaRabota.Controllers
         [HttpGet]
         public async Task<IActionResult> Add()
         {
-            return View();
+            SubjectViewModel subjects = new();
+            subjects.Subjects = await subjectService.GetAll();
+
+            return View(subjects);
         }
 
         [HttpPost]
@@ -34,10 +37,23 @@ namespace KursovaRabota.Controllers
             {
                 await subjectService.Add(model);
                 TempData["success"] = "Предметът бе добавен успешно";
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("Add");
             }
             TempData["error"] = "Грешка в добавянето на предмета";
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Add");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete (string id)
+        {
+            if (id != null) 
+            {
+                await subjectService.Delete(Guid.Parse(id));
+                TempData["success"] = "Предметът бе изтрит успешно";
+                return RedirectToAction("Add");
+            }
+            TempData["error"] = "Грешка в изтриването на предмета";
+            return RedirectToAction("Add");
         }
     }
 }

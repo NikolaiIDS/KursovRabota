@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace KursovaRabota.Services
 {
@@ -80,20 +81,15 @@ namespace KursovaRabota.Services
         public async Task<LoginResult> Login(LoginViewModel model)
         {
             var user = await userManager.FindByEmailAsync(model.Email);
-            if (user == null || !user.Approved)
+            if (!user.Approved)
             {
                 return LoginResult.WaitingApproval;
             }
 
-            if (await signInManager.CanSignInAsync(user) && user != null)
-            {
-                var options = new AuthenticationProperties
-                {
-                    AllowRefresh = true,
-                    IsPersistent = true
-                };
+            var result = await signInManager.PasswordSignInAsync(user, model.Password, true, true);
 
-                await signInManager.SignInAsync(user, options);
+            if (result.Succeeded)
+            {
                 return LoginResult.Success;
             }
             return LoginResult.Fail;

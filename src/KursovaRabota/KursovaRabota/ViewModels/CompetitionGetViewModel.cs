@@ -1,34 +1,30 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using KursovaRabota.Data.Models;
 
-namespace KursovaRabota.Data.Models
+namespace KursovaRabota.ViewModels
 {
-    public class Competition
+    public class CompetitionGetViewModel
     {
-        [Key]
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
 
-        
-        [StringLength(100, MinimumLength = 3)]
+
         public string Name { get; set; } = null!;
 
-        
-        [StringLength(300, MinimumLength = 3)]
+
         public string Description { get; set; } = null!;
 
-        
+
         public DateTime RegistrationDeadline { get; set; }
 
-        
-        [StringLength(100, MinimumLength = 3)]
+
         public string Location { get; set; } = null!;
 
-        
+
         public int MaxParticipants { get; set; }
 
-        
+
         public bool IsFull { get; set; }
 
-        
+
         public bool IsActive { get; set; }
 
 
@@ -36,10 +32,5 @@ namespace KursovaRabota.Data.Models
 
 
         public Subject Subject { get; set; } = null!;
-
-        public List<ApplicationUser> Users { get; set; } = null!;
-
-
     }
-
 }

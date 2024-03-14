@@ -1,0 +1,24 @@
+﻿@using KursovaRabota.ViewModels.CompetitionTypeVMs
+@model CompetitionTypeViewModel
+
+<form asp-action="Add" method="post">
+    <div class="form-group">
+        <label asp-for="Type">Вид състезание</label>
+        <input asp-for="Type" class="form-control" />
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Добав тип</button>
+
+
+</form>
+<div>
+    @if (Model.AllTypes != null)
+    {
+        @for (int i = 1; i <= Model.AllTypes.Count; i++)
+        {
+            <label>@i: @Model.AllTypes[i - 1].Type</label>
+            <a class="btn btn-danger" asp-action="Delete" asp-controller="Subject" asp-route-id="@Model.AllTypes[i-1].Id">Delete</a>
+        }
+    }
+</div>

@@ -1,6 +1,6 @@
 ﻿using KursovaRabota.Data.Models;
 
-namespace KursovaRabota.ViewModels
+namespace KursovaRabota.ViewModels.CompetitionVMs
 {
     public class CompetitionGetViewModel
     {

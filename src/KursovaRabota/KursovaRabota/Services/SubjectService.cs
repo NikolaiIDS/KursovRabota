@@ -1,8 +1,7 @@
 ﻿using KursovaRabota.Data;
 using KursovaRabota.Data.Models;
 using KursovaRabota.Services.Contracts;
-using KursovaRabota.ViewModels;
-
+using KursovaRabota.ViewModels.SubjectVMs;
 using Microsoft.EntityFrameworkCore;
 
 namespace KursovaRabota.Services

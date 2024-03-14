@@ -1,4 +1,4 @@
-﻿using KursovaRabota.ViewModels;
+﻿using KursovaRabota.ViewModels.SubjectVMs;
 
 namespace KursovaRabota.Services.Contracts
 {

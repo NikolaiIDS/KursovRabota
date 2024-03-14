@@ -1,15 +1,26 @@
-﻿using KursovaRabota.ViewModels;
-
+﻿using KursovaRabota.Data;
+using KursovaRabota.Services.Contracts;
+using KursovaRabota.ViewModels.CompetitionVMs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KursovaRabota.Controllers
 {
     public class CompetitionController : Controller
     {
+        private ApplicationDbContext _context;
+        private ICompetitionService _competitionService;
+        private ISubjectService _subjectService;
+
+        public CompetitionController(ApplicationDbContext context, ICompetitionService competitionService)
+        {
+            _context = context;
+            _competitionService = competitionService;
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            _competitionService.GetAll();
             return View();
         }
 

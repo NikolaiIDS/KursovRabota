@@ -1,18 +1,18 @@
 ﻿using KursovaRabota.Services.Contracts;
-using KursovaRabota.ViewModels.SubjectVMs;
-using Microsoft.AspNetCore.Authorization;
+using KursovaRabota.ViewModels.CompetitionTypeVMs;
+using KursovaRabota.ViewModels.UserVMs;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace KursovaRabota.Controllers
 {
-    [Authorize(Roles = "Admin, Teacher")]
-    public class SubjectController : Controller
+    public class CompetitionTypeController : Controller
     {
-        private protected ISubjectService subjectService;
+        private protected ICompetitionTypeService compTypeService;
 
-        public SubjectController(ISubjectService subjectService)
+        public CompetitionTypeController(ICompetitionTypeService compTypeService)
         {
-            this.subjectService = subjectService;
+            this.compTypeService = compTypeService;
         }
 
         public IActionResult Index()
@@ -23,18 +23,18 @@ namespace KursovaRabota.Controllers
         [HttpGet]
         public async Task<IActionResult> Add()
         {
-            SubjectViewModel subjects = new();
-            subjects.Subjects = await subjectService.GetAll();
+            CompetitionTypeViewModel compTypes = new();
+            compTypes.AllTypes = await compTypeService.GetAll();
 
-            return View(subjects);
+            return View(compTypes);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(SubjectViewModel model)
+        public async Task<IActionResult> Add(CompetitionTypeViewModel model)
         {
             if (ModelState.IsValid)
             {
-                await subjectService.Add(model);
+                await compTypeService.Add(model);
                 TempData["success"] = "Предметът бе добавен успешно";
                 return RedirectToAction("Add");
             }
@@ -43,11 +43,11 @@ namespace KursovaRabota.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Delete (string id)
+        public async Task<IActionResult> Delete(string id)
         {
-            if (id != null) 
+            if (id != null)
             {
-                await subjectService.Delete(Guid.Parse(id));
+                await compTypeService.Delete(Guid.Parse(id));
                 TempData["success"] = "Предметът бе изтрит успешно";
                 return RedirectToAction("Add");
             }

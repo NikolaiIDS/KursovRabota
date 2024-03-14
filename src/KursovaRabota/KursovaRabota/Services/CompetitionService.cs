@@ -1,20 +1,39 @@
 ﻿using KursovaRabota.Data;
 using KursovaRabota.Data.Models;
 using KursovaRabota.Services.Contracts;
-using KursovaRabota.ViewModels;
-
+using KursovaRabota.ViewModels.CompetitionVMs;
+using KursovaRabota.ViewModels.UserVMs;
 using Microsoft.EntityFrameworkCore;
 
 namespace KursovaRabota.Services
 {
-    public class CourseService : ICompetitionService
+    public class CompetitionService : ICompetitionService
     {
 
         private protected ApplicationDbContext context;
 
-        public CourseService(ApplicationDbContext context)
+        public CompetitionService(ApplicationDbContext context)
         {
             this.context = context;
+        }
+
+        public async Task Add(CompetitionAddViewModel model)
+        {
+            Competition comp = new Competition
+            {
+                CompetitionType = model.CompetitionType,
+                Description = model.Description,
+                IsActive = true,
+                IsFull = false,
+                Location = model.Location,
+                MaxParticipants = model.MaxParticipants,
+                Name = model.Name,
+                RegistrationDeadline = model.RegistrationDeadline,
+                Subject = model.Subject
+            };
+
+            await context.AddAsync(comp);
+            await context.SaveChangesAsync();
         }
 
         public async Task Delete(Guid id)

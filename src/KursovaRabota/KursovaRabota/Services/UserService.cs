@@ -3,7 +3,7 @@ using KursovaRabota.Data.Models;
 using KursovaRabota.Services.Contracts;
 using KursovaRabota.ViewModels;
 using KursovaRabota.ViewModels.Enums;
-
+using KursovaRabota.ViewModels.UserVMs;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Identity;

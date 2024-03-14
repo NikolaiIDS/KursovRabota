@@ -1,6 +1,7 @@
 ﻿using KursovaRabota.Data.Models;
 using KursovaRabota.ViewModels;
 using KursovaRabota.ViewModels.Enums;
+using KursovaRabota.ViewModels.UserVMs;
 
 namespace KursovaRabota.Services.Contracts
 {

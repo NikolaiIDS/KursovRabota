@@ -28,7 +28,8 @@ namespace KursovaRabota
 
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ISubjectService, SubjectService>();
-
+            builder.Services.AddScoped<ICompetitionTypeService, CompetitionTypeService>();
+            builder.Services.AddScoped<ICompetitionService, CompetitionService>();
 
             var app = builder.Build();
 

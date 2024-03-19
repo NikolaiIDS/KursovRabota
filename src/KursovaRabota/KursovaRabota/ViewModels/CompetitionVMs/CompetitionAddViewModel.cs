@@ -23,5 +23,13 @@ namespace KursovaRabota.ViewModels.CompetitionVMs
 
 
         public Subject Subject { get; set; } = null!;
+
+        public List<Subject> Subjects { get; set; } = null!;
+
+        public List<CompetitionType> CompetitionTypes { get; set; } = null!;
+
+        //Add view and test
+
+
     }
 }

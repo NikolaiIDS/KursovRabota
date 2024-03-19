@@ -20,8 +20,8 @@ namespace KursovaRabota.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            _competitionService.GetAll();
-            return View();
+            var list =await _competitionService.GetAll();
+            return View(list);
         }
 
         [HttpGet]
@@ -45,6 +45,13 @@ namespace KursovaRabota.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(Guid id)
         {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Add()
+        {
+            var model = new CompetitionAddViewModel();
             return View();
         }
     }

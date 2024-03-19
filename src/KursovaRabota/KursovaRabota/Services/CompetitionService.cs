@@ -3,6 +3,7 @@ using KursovaRabota.Data.Models;
 using KursovaRabota.Services.Contracts;
 using KursovaRabota.ViewModels.CompetitionVMs;
 using KursovaRabota.ViewModels.UserVMs;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace KursovaRabota.Services
@@ -69,10 +70,10 @@ namespace KursovaRabota.Services
         {
             var model = new GetCompUsersViewModel();
 
-            var competition =  context.Competitions
-                .Include(x=>x.Users)
-                .FirstOrDefault(x=> x.Id ==  id );
-            
+            var competition = context.Competitions
+                .Include(x => x.Users)
+                .FirstOrDefault(x => x.Id == id);
+
             model.Students = competition.Users;
 
             return model;

@@ -30,6 +30,7 @@ namespace KursovaRabota.ViewModels.CompetitionVMs
 
         public CompetitionType CompetitionType { get; set; } = null!;
 
+        public string? CompetitionName { get; set; }
 
         public Subject Subject { get; set; } = null!;
     }

@@ -35,7 +35,7 @@ namespace KursovaRabota.Services
         {
             var list = await context.Subjects.Select(x => new SubjectViewModel 
             { 
-                Id = x.Id.ToString(),
+                Id = x.Id,
                 SubjectName = x.SubjectName
             }).ToListAsync();
 

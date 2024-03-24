@@ -1,32 +1,33 @@
-﻿@model KursovaRabota.ViewModels.CompetitionVMs.CompetitionGetAllViewModel
+﻿@using KursovaRabota.ViewModels.CompetitionVMs;
+@model List<CompetitionGetViewModel>
 
 @{
-    ViewData["Title"] = "All Competitions";
+    ViewData["Title"] = "Всички Състезания";
 }
 
-<h1>All Competitions</h1>
+<h1>Всички Състезания</h1>
 
 <div class="mb-3">
-    <a asp-controller="Competition" asp-action="Add" class="btn btn-success">Add Competition</a>
+    <a asp-controller="Competition" asp-action="Add" class="btn btn-success">Добави Състезание</a>
 </div>
 
-@if (Model.Competitions.Any())
+@if (Model.Any())
 {
     <table class="table">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Subject</th>
-                <th>Type</th>
-                <th>Location</th>
-                <th>Max Participants</th>
-                <th>Registration Deadline</th>
-                <th>Actions</th>
+                <th>Име</th>
+                <th>Описание</th>
+                <th>Предмет</th>
+                <th>Тип</th>
+                <th>Местоположение</th>
+                <th>Максимален Брой Участници</th>
+                <th>Крайна Дата за Регистрация</th>
+                <th>Действия</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var competition in Model.Competitions)
+            @foreach (var competition in Model)
             {
                 <tr>
                     <td>@competition.Name</td>
@@ -37,14 +38,32 @@
                     <td>@competition.MaxParticipants</td>
                     <td>@competition.RegistrationDeadline.ToString("yyyy-MM-dd")</td>
                     <td>
-                        <form asp-controller="Competition" asp-action="GetAllUsers" method="get">
-                            <input type="hidden" name="id" value="@competition.Id" />
-                            <button type="submit" class="btn btn-primary">View Users</button>
-                        </form>
-                        <form asp-controller="Competition" asp-action="Delete" method="post">
-                            <input type="hidden" name="id" value="@competition.Id" />
-                            <button type="submit" class="btn btn-danger">Deactivate</button>
-                        </form>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
+                        {
+                            <form asp-controller="Competition" asp-action="GetAllUsers" method="get">
+                                <input type="hidden" name="id" value="@competition.Id" />
+                                <button type="submit" class="btn btn-primary">Преглед на Потребители</button>
+                            </form>
+                            <form asp-controller="Competition" asp-action="Update" method="get">
+                                <input type="hidden" name="id" value="@competition.Id" />
+                                <button type="submit" class="btn btn-secondary">Промяна на състезание</button>
+                            </form>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <form asp-controller="Competition" asp-action="Delete" method="post">
+                                <input type="hidden" name="id" value="@competition.Id" />
+                                <button type="submit" class="btn btn-danger">Деактивиране</button>
+                            </form>
+                        }
+                        @if (User.IsInRole("Student"))
+                        {
+                            <form asp-controller="Competition" asp-action="Subscribe" method="post">
+                                <input type="hidden" name="id" value="@competition.Id" />
+                                <button type="submit" class="btn btn-primary">Записване</button>
+                            </form>
+                        }
+                        
                     </td>
                 </tr>
             }
@@ -53,7 +72,7 @@
 }
 else
 {
-    <p>No competitions available.</p>
+    <p>Няма налични състезания.</p>
 }
 
 @section Scripts {

@@ -24,8 +24,8 @@ namespace KursovaRabota.Migrations
 
             modelBuilder.Entity("ApplicationUserCompetition", b =>
                 {
-                    b.Property<int>("CompetitionsId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("CompetitionsId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UsersId")
                         .HasColumnType("nvarchar(450)");
@@ -139,7 +139,7 @@ namespace KursovaRabota.Migrations
                             Id = "9de92530-126f-44fe-8846-f5099e0e1cc3",
                             AccessFailedCount = 0,
                             Approved = true,
-                            ConcurrencyStamp = "4d016052-88da-4f1a-9c94-7bd750a4ce5e",
+                            ConcurrencyStamp = "f29de16a-2fa6-4998-8152-a710f281f26b",
                             Email = "admin@email.com",
                             EmailConfirmed = false,
                             FirstName = "admin",
@@ -147,21 +147,57 @@ namespace KursovaRabota.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "admin@email.com",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAIAAYagAAAAECjauQ1z7IcIZfXV2vbDaruxFC1s5bvCUX817PxFi5g+MZonkeVJparwiVepV0Jkvw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIyskt2mYtmAFIpBEpv0zERnQ6lB3uCRFP6OO3RMrXCG1agZmV5laRWoNqDIXb6/fA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "73eb76e8-a730-4d33-ab5c-d29d912f6bcb",
+                            SecurityStamp = "c775c358-bb71-41f3-97e7-62e21a344304",
                             TwoFactorEnabled = false,
                             UserName = "admin"
+                        },
+                        new
+                        {
+                            Id = "9de92530-126f-44fe-8846-f5099e0e1cc4",
+                            AccessFailedCount = 0,
+                            Approved = true,
+                            ConcurrencyStamp = "29290cff-6a99-4b1e-bf89-380ae5dbf480",
+                            Email = "teacher@email.com",
+                            EmailConfirmed = false,
+                            FirstName = "teacher",
+                            LastName = "teacher",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "teacher@email.com",
+                            NormalizedUserName = "teacher",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMSOmJBvk29ug9SkrlsbYvHSokc93+MeN9K4GdjL2jQlVl+TQCiOQDiUJ9dEV2WeEQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "a1ce57f6-6250-42df-8b6d-e150a7eef662",
+                            TwoFactorEnabled = false,
+                            UserName = "teacher"
+                        },
+                        new
+                        {
+                            Id = "9de92530-126f-44fe-8846-f5099e0e1cc5",
+                            AccessFailedCount = 0,
+                            Approved = true,
+                            ConcurrencyStamp = "fab3c037-585a-4264-a5ad-dd4fdc22c388",
+                            Email = "student@email.com",
+                            EmailConfirmed = false,
+                            FirstName = "student",
+                            LastName = "student",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "student@email.com",
+                            NormalizedUserName = "student",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBoHNBq+vDcJdVFd3Q0WjRatBhwN+Z8lmhL0iFDQ0w1bhCP+tlbjj57xRtnOWsOG4A==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "7161697f-f0cf-46c2-8c85-39da01098605",
+                            TwoFactorEnabled = false,
+                            UserName = "student"
                         });
                 });
 
             modelBuilder.Entity("KursovaRabota.Data.Models.Competition", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("CompetitionTypeId")
                         .HasColumnType("uniqueidentifier");
@@ -219,6 +255,28 @@ namespace KursovaRabota.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CompetitionTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("091ab545-db8a-4f99-a90d-eff0459299a9"),
+                            Type = "Олимпиада"
+                        },
+                        new
+                        {
+                            Id = new Guid("9d159406-237e-49a2-b882-a8abfc34ac70"),
+                            Type = "Училищно състезание"
+                        },
+                        new
+                        {
+                            Id = new Guid("c1090772-61f3-4d78-951e-cb5543ec4ceb"),
+                            Type = "Областен кръг"
+                        },
+                        new
+                        {
+                            Id = new Guid("8b17b9a3-9739-49b9-aaf4-75c5f7aef6de"),
+                            Type = "Национален кръг"
+                        });
                 });
 
             modelBuilder.Entity("KursovaRabota.Data.Models.Subject", b =>
@@ -235,6 +293,28 @@ namespace KursovaRabota.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Subjects");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("4f178798-b200-4a74-8bfc-04a5006c9d07"),
+                            SubjectName = "Математика"
+                        },
+                        new
+                        {
+                            Id = new Guid("dcba1c86-3e9d-4f22-b8c3-5cebfd31137d"),
+                            SubjectName = "Български език"
+                        },
+                        new
+                        {
+                            Id = new Guid("443b7681-f529-4120-a579-69ad8f5707c2"),
+                            SubjectName = "География"
+                        },
+                        new
+                        {
+                            Id = new Guid("12defb66-0c01-414a-8d94-d2865631bd4a"),
+                            SubjectName = "История"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

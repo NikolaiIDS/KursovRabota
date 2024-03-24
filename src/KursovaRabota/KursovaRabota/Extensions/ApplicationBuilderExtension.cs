@@ -36,6 +36,12 @@ namespace KursovaRabota.Extensions
 
                 ApplicationUser admin = await userManager.FindByNameAsync("admin");
                 await userManager.AddToRoleAsync(admin, "Admin");
+
+                ApplicationUser teacher = await userManager.FindByNameAsync("teacher");
+                await userManager.AddToRoleAsync(teacher, "Teacher");
+
+                ApplicationUser student = await userManager.FindByNameAsync("student");
+                await userManager.AddToRoleAsync(student, "Student");
             })
             .GetAwaiter()
             .GetResult();

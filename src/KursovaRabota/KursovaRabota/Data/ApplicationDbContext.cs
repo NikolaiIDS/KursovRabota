@@ -20,6 +20,9 @@ namespace KursovaRabota.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new AdminConfiguration());
+            builder.ApplyConfiguration(new UsersConfiguration());
+            builder.ApplyConfiguration(new SubjectConfiguration());
+            builder.ApplyConfiguration(new CompetitionTypeConfiguration());
             base.OnModelCreating(builder);
         }
     }

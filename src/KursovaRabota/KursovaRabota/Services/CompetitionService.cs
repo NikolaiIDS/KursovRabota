@@ -20,9 +20,12 @@ namespace KursovaRabota.Services
 
         public async Task Add(CompetitionAddViewModel model)
         {
+            var campType = await context.CompetitionTypes.FindAsync(model.CompetitionTypeId);
+            var subject = await context.Subjects.FindAsync(model.SubjectId);
+
             Competition comp = new Competition
             {
-                CompetitionType = model.CompetitionType,
+                CompetitionType = campType,
                 Description = model.Description,
                 IsActive = true,
                 IsFull = false,
@@ -30,7 +33,7 @@ namespace KursovaRabota.Services
                 MaxParticipants = model.MaxParticipants,
                 Name = model.Name,
                 RegistrationDeadline = model.RegistrationDeadline,
-                Subject = model.Subject
+                Subject = subject
             };
 
             await context.AddAsync(comp);
@@ -46,33 +49,13 @@ namespace KursovaRabota.Services
 
         }
 
-        public async Task<CompetitionGetAllViewModel> GetAll()
-        {
-            CompetitionGetAllViewModel viewModel = new CompetitionGetAllViewModel();
-            viewModel.Competitions = await context.Competitions.Select(x => new CompetitionGetViewModel
-            {
-                Id = x.Id,
-                Name = x.Name,
-                Description = x.Description,
-                Subject = x.Subject,
-                CompetitionType = x.CompetitionType,
-                IsActive = x.IsActive,
-                IsFull = x.IsFull,
-                Location = x.Location,
-                MaxParticipants = x.MaxParticipants,
-                RegistrationDeadline = x.RegistrationDeadline
-            }).ToListAsync();
-
-            return viewModel;
-        }
-
         public async Task<GetCompUsersViewModel> GetAllUsers(Guid id)
         {
             var model = new GetCompUsersViewModel();
 
-            var competition = context.Competitions
+            var competition = await context.Competitions
                 .Include(x => x.Users)
-                .FirstOrDefault(x => x.Id == id);
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             model.Students = competition.Users;
 
@@ -80,14 +63,86 @@ namespace KursovaRabota.Services
 
         }
 
-        public Task<CompetitionGetViewModel> GetById(Guid id)
+        public async Task<CompetitionGetViewModel> GetById(Guid id)
         {
-            throw new NotImplementedException();
+            var viewModel = await context.Competitions
+                .Where(x => x.IsFull == false && x.IsActive == true)
+                .Include(x => x.Users)
+                .Select(x => new CompetitionGetViewModel
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Description = x.Description,
+                    Subject = x.Subject,
+                    CompetitionType = x.CompetitionType,
+                    IsActive = x.IsActive,
+                    IsFull = x.IsFull,
+                    Location = x.Location,
+                    MaxParticipants = x.MaxParticipants,
+                    RegistrationDeadline = x.RegistrationDeadline
+                }).FirstOrDefaultAsync();
+
+            return viewModel;
         }
 
-        public Task<CompetitionUpdateViewModel> Update(Guid id)
+        public async Task<bool> Update(CompetitionUpdateViewModel model)
         {
-            throw new NotImplementedException();
+            var campType = await context.CompetitionTypes.FindAsync(model.CompetitionTypeId);
+            var subject = await context.Subjects.FindAsync(model.SubjectId);
+
+
+            var fromDb = await context.Competitions
+                .Select(x => new Competition
+                {
+                    Id = x.Id,
+                    Name = model.Name,
+                    Description = model.Description,
+                    Subject = subject,
+                    CompetitionType = campType,
+                    IsActive = x.IsActive,
+                    IsFull = x.IsFull,
+                    Location = model.Location,
+                    MaxParticipants = model.MaxParticipants,
+                    RegistrationDeadline = model.RegistrationDeadline
+                }).FirstOrDefaultAsync();
+            context.Competitions.Update(fromDb);
+            await context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<List<CompetitionGetViewModel>> GetAll()
+        {
+            var viewModel = new List<CompetitionGetViewModel>();
+            viewModel = await context.Competitions
+                .Where(x => x.IsFull == false && x.IsActive == true)
+                .Include(x => x.Users)
+                .Select(x => new CompetitionGetViewModel
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Description = x.Description,
+                    Subject = x.Subject,
+                    CompetitionType = x.CompetitionType,
+                    IsActive = x.IsActive,
+                    IsFull = x.IsFull,
+                    Location = x.Location,
+                    MaxParticipants = x.MaxParticipants,
+                    RegistrationDeadline = x.RegistrationDeadline
+                }).ToListAsync();
+
+            return viewModel;
+        }
+
+        public async Task Deactivate(Guid id)
+        {
+            var competition = await context.Competitions.FindAsync(id);
+            if (competition == null)
+            {
+                competition.IsActive = false;
+                await context.SaveChangesAsync();
+                return;
+            }
+            return;
         }
     }
 }

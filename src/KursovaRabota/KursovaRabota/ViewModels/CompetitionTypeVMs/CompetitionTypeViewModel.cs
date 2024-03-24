@@ -5,7 +5,7 @@ namespace KursovaRabota.ViewModels.CompetitionTypeVMs
     public class CompetitionTypeViewModel
     {
         [Key]
-        public Guid? Id { get; set; }
+        public Guid Id { get; set; }
         [MinLength(1)]
         [MaxLength(50)]
         public string Type { get; set; } = null!;

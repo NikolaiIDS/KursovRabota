@@ -4,6 +4,6 @@ namespace KursovaRabota.ViewModels.CompetitionVMs
 {
     public class CompetitionGetAllViewModel
     {
-        public List<CompetitionGetViewModel>? Competitions { get; set; }
+        public CompetitionGetViewModel? Competitions { get; set; }
     }
 }

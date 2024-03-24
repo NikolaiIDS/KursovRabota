@@ -1,0 +1,74 @@
+﻿@model KursovaRabota.ViewModels.CompetitionVMs.CompetitionUpdateViewModel
+
+@{
+    ViewData["Title"] = "Добавяне на Състезание";
+}
+
+<h1> Промяна на Състезание</h1>
+
+<form asp-action="Update" asp-controller="Competition" method="post">
+    <div class="form-group">
+        <label asp-for="Name">Име:</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description">Описание:</label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="RegistrationDeadline">Срок за регистрация:</label>
+        <input asp-for="RegistrationDeadline" class="form-control" type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" value="@DateTime.Now.AddDays(7).ToString("yyyy-MM-dd")" />
+        <span asp-validation-for="RegistrationDeadline" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Location">Местоположение:</label>
+        <input asp-for="Location" class="form-control" />
+        <span asp-validation-for="Location" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="MaxParticipants">Максимален брой участници:</label>
+        <input asp-for="MaxParticipants" class="form-control" type="number" min="1" />
+        <span asp-validation-for="MaxParticipants" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="Subject">Предмет:</label>
+        <select id="subjectDropdown" asp-for="SubjectId" asp-items="@(new SelectList(Model.Subjects, "Id", "SubjectName"))" class="form-control">
+            <option value="">Избери предмет</option>
+        </select>
+        <span asp-validation-for="SubjectId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="CompetitionType">Тип състезание:</label>
+        <select id="competitionTypeDropdown" asp-for="CompetitionTypeId" asp-items="@(new SelectList(Model.CompetitionTypes, "Id", "Type"))" class="form-control">
+            <option value="">Избери състезание</option>
+        </select>
+        <span asp-validation-for="CompetitionTypeId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Промени Състезание</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Disable default options in dropdowns after selecting another option
+        document.getElementById('subjectDropdown').addEventListener('change', function () {
+            var defaultOption = this.options[0];
+            defaultOption.disabled = true;
+        });
+
+        document.getElementById('competitionTypeDropdown').addEventListener('change', function () {
+            var defaultOption = this.options[0];
+            defaultOption.disabled = true;
+        });
+    </script>
+}

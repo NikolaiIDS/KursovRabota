@@ -23,31 +23,48 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Начална страница</a>
                         </li>
+
+
+                        @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
+                        {
+                            <li class="nav-item">
+                                <a asp-controller="Subject" asp-action="Add" class="nav-link text-dark">Добави предмет</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a asp-controller="CompetitionType" asp-action="Add" class="nav-link text-dark">Добави тип състезание</a>
+                            </li>
+
+
+                            <li class="nav-item">
+                                <a asp-controller="Competition" asp-action="GetAll" class="nav-link text-dark">Виж състезания</a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a asp-controller="User" asp-action="GetAllUnregistered" class="nav-link text-dark">Нерегистрирани потребители</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a asp-controller="User" asp-action="GetAll" class="nav-link text-dark">Регистрирани потребители</a>
+                            </li>
+                        }
                     </ul>
                     @if (User.Identity.IsAuthenticated)
                     {
                         <div>
                             <p>Hello @User.Identity.Name</p>
-                            <a asp-controller="User" asp-action="Logout" class="btn btn-primary">Излез</a>
+                            <a asp-controller="User" asp-action="Logout" class="btn btn-danger">Излез</a>
                         </div>
                     }
                     else
                     {
-                        <a asp-controller="User" asp-action="Login" class="btn btn-primary">Влез</a>
-                        <a asp-controller="User" asp-action="Register" class="btn btn-primary">Регустрирай се</a>
+                        <div>
+                            <a asp-controller="User" asp-action="Login" class="btn btn-primary">Влез</a>
+                            <a asp-controller="User" asp-action="Register" class="btn btn-secondary">Регистрирай се</a>
+                        </div>
                     }
-                    @if(User.IsInRole("Admin")|| User.IsInRole("Teacher"))
-                    {
-                        <a asp-controller="Subject" asp-action="Add" class="btn btn-primary">Добави предмет</a>
-                        <a asp-controller="CompetitionType" asp-action="Add" class="btn btn-primary">Добави тип състезание</a>
-
-                    }
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <a asp-controller="User" asp-action="GetAllUnregistered" class="btn btn-primary">Нерегистрирани потребители</a>
-                        <a asp-controller="User" asp-action="GetAll" class="btn btn-primary">Регистрирани потребители</a>
-                    }
-
                 </div>
             </div>
         </nav>

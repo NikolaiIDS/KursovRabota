@@ -85,13 +85,13 @@ namespace KursovaRabota.Services
             return viewModel;
         }
 
-        public async Task<bool> Update(CompetitionUpdateViewModel model)
+        public async Task Update(CompetitionUpdateViewModel model)
         {
-            var campType = await context.CompetitionTypes.FindAsync(model.CompetitionTypeId);
-            var subject = await context.Subjects.FindAsync(model.SubjectId);
+            var campType = context.CompetitionTypes.Find(model.CompetitionTypeId);
+            var subject = context.Subjects.Find(model.SubjectId);
 
 
-            var fromDb = await context.Competitions
+            var fromDb = context.Competitions
                 .Select(x => new Competition
                 {
                     Id = x.Id,
@@ -104,10 +104,9 @@ namespace KursovaRabota.Services
                     Location = model.Location,
                     MaxParticipants = model.MaxParticipants,
                     RegistrationDeadline = model.RegistrationDeadline
-                }).FirstOrDefaultAsync();
+                }).FirstOrDefault();
             context.Competitions.Update(fromDb);
             await context.SaveChangesAsync();
-            return true;
         }
 
         public async Task<List<CompetitionGetViewModel>> GetAll()

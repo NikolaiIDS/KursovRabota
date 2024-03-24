@@ -4,20 +4,20 @@
 <head>
     <link rel="stylesheet" href="~/css/login.css" />
 </head>
-">
+
 <div>
     <form id="loginForm" method="post" class="container">
         <fieldset>
-            <legend>Login</legend>
+            <legend>Вход</legend>
             <div class="form-group">
-                <label for="email">Email:</label>
+                <label for="email">Имейл:</label>
                 <input asp-for="@Model.Email" type="email" class="form-control" id="email" required>
             </div>
             <div class="form-group">
-                <label for="password">Password:</label>
+                <label for="password">Парола:</label>
                 <input asp-for="@Model.Password" type="password" class="form-control" id="password" required>
             </div>
-            <button type="submit" class="btn btn-primary">Login</button>
+            <button type="submit" class="btn btn-primary">Вход</button>
         </fieldset>
     </form>
 </div>

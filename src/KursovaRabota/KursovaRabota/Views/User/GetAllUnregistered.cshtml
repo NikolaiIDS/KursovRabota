@@ -1,7 +1,7 @@
 ﻿@using KursovaRabota.ViewModels
 @model List<DisplayUserViewModel>
 
-<h2>User Management</h2>
+<h2>Нерегистрирани потребители</h2>
 
 @foreach (var user in Model)
 {
@@ -9,15 +9,17 @@
         <div class="card-body">
             <h5 class="card-title">@($"{user.FirstName} {user.LastName}")</h5>
             <p class="card-text">
-                UserName: @user.UserName <br />Email: @user.Email Phone: <br />@user.PhoneNumber
+                Потребителско име: @user.UserName <br />Електронна поща: @user.Email Телефон: <br />@user.PhoneNumber
             </p>
             @if (!string.IsNullOrEmpty(user.DesiredRole))
             {
-                <p class="card-text">Desired Role: @user.DesiredRole</p>
+                <p class="card-text">Желана роля: @user.DesiredRole</p>
             }
-            <form  method="get">
-                <button asp-action="ApproveUser" asp-controller="User" type="submit" class="btn btn-primary" asp-route-id="@user.Id">Approve</button>
+            <form method="get">
+                <button asp-action="ApproveUser" asp-controller="User" type="submit" class="btn btn-primary" asp-route-id="@user.Id">Одобри</button>
             </form>
         </div>
     </div>
+}
+
 }

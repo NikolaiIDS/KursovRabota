@@ -222,7 +222,7 @@ namespace KursovaRabota.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(Guid Id)
         {
-            if (Id!=null)
+            if (Id!= Guid.Empty)
             {
                 await userService.Delete(Id);
                 await context.SaveChangesAsync();

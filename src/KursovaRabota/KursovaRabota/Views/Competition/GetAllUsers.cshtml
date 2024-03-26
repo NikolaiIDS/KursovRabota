@@ -1,79 +1,36 @@
-﻿@using KursovaRabota.ViewModels.CompetitionVMs
-@model CompetitionGetAllViewModel
+﻿@using KursovaRabota.ViewModels.UserVMs;
 
-@{
-    ViewData["Title"] = "Всички Състезания";
-}
+@model GetCompUsersViewModel
 
-<h1>Всички Състезания</h1>
+<h1>Ученици</h1>
 
-<div class="mb-3">
-    <a asp-controller="Competition" asp-action="Add" class="btn btn-success">Добави Състезание</a>
-</div>
-
-@if (Model.Competitions.Any())
+@if (Model.Students.Any())
 {
 
     <table class="table">
         <thead>
             <tr>
                 <th>Име</th>
-                <th>Описание</th>
-                <th>Предмет</th>
-                <th>Тип</th>
-                <th>Местоположение</th>
-                <th>Брой Записани Участници</th>
-                <th>Максимален Брой Участници</th>
-                <th>Крайна Дата за Регистрация</th>
-                <th>Действия</th>
+                <th>Фамилия</th>
+                <th>Имейл</th>
+                <th>Телефонен Номер</th>
+                <th>Клас</th>
             </tr>
         </thead>
         <tbody id="competitionTable">
-            @foreach (var competition in Model.Competitions)
+            @foreach (var user in Model.Students)
             {
                 <tr>
-                    <td>@competition.Name</td>
-                    <td>@competition.Description</td>
-                    <td>@competition.Subject.SubjectName</td>
-                    <td>@competition.CompetitionType.Type</td>
-                    <td>@competition.Location</td>
-                    <td>@competition.CurrentParticipants</td>
-                    <td>@competition.MaxParticipants</td>
-                    <td>@competition.RegistrationDeadline.ToString("yyyy-MM-dd")</td>
-                    <td>
-                        @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
-                        {
-                            <form asp-controller="Competition" asp-action="GetAllUsers" method="get">
-                                <input type="hidden" name="id" value="@competition.Id" />
-                                <button type="submit" class="btn btn-primary">Преглед на Потребители</button>
-                            </form>
-                            <form asp-controller="Competition" asp-action="Update" method="get">
-                                <input type="hidden" name="id" value="@competition.Id" />
-                                <button type="submit" class="btn btn-secondary">Промяна на състезание</button>
-                            </form>
-                        }
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <form asp-controller="Competition" asp-action="Delete" method="post">
-                                <input type="hidden" name="id" value="@competition.Id" />
-                                <button type="submit" class="btn btn-danger">Деактивиране</button>
-                            </form>
-                        }
-                        @if (User.IsInRole("Student"))
-                        {
-                            <form asp-controller="User" asp-action="Subscribe" method="post">
-                                <input type="hidden" name="id" value="@competition.Id" />
-                                <button type="submit" class="btn btn-primary">Записване</button>
-                            </form>
-
-                        }
-
-                    </td>
+                    <td>@user.FirstName</td>
+                    <td>@user.LastName</td>
+                    <td>@user.Email</td>
+                    <td>@user.PhoneNumber</td>
+                    <td>@user.Class</td>
                 </tr>
             }
         </tbody>
     </table>
-    <form asp-action="GetAll" asp-controller="Competition" method="get" id="paginationForm">
+    <form asp-action="GetAllUsers" asp-controller="Competition" method="get" id="paginationForm">
 
             <input type="hidden" name="pageNumber" id="pageNumberInput" value="@(Model.CurrentPage)" />
             <input type="hidden" name="pageSize" value="@(Model.PageSize)" />

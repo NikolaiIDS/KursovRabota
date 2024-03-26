@@ -28,40 +28,30 @@ namespace KursovaRabota.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Student")]
-
-        public async Task<IActionResult> GetAllForUser()
-        {
-            var user = await _signInManager.UserManager.GetUserAsync(User);
-            if (user != null)
-            {
-
-                var list = await _competitionService.GetAllExceptUsers(user.Id);
-
-                return View(list);
-            }
-
-            TempData["warning"] = "Грешка";
-            return View();
-        }
-
-        [HttpGet]
         [Authorize(Roles = "Admin, Teacher")]
 
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(int? pageSize, int? pageNumber)
         {
             var list = await _competitionService.GetAll();
             var model = new CompetitionGetAllViewModel();
+
             model.Competitions = list;
+            pageSize = pageSize ?? 1; // Default page size is 6
+            pageNumber = pageNumber ?? 1; // Default page number is 1
+            model.PageSize = pageSize.Value;
+            model.CurrentPage = pageNumber.Value;
+            model.TotalPages = (int)Math.Ceiling((double)model.Competitions.Count() / pageSize.Value);
+
+            model.Competitions = model.Competitions
+                .Skip((pageNumber.Value - 1) * pageSize.Value)
+                .Take(pageSize.Value)
+                .ToList();
+
+            // Pass the paginated cars to the view
+            
             return View(model);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllUsers(Guid id)
-        {
-            var users = await _competitionService.GetAllUsers(id);
-            return View(users);
-        }
 
         [HttpGet]
         public async Task<IActionResult> Update(Guid id)
@@ -157,15 +147,54 @@ namespace KursovaRabota.Controllers
         [HttpGet]
         [Authorize(Roles = "Student")]
 
-        public async Task<IActionResult> GetAllSubscriptions(CompetitionAddViewModel model)
+        public async Task<IActionResult> GetAllSubscriptions(CompetitionAddViewModel fromView, int? pageSize = 10, int? pageNumber = 1)
         {
             var user = await _signInManager.UserManager.GetUserAsync(User);
             if (user != null)
             {
 
                 var list = await _competitionService.GetAllSubscriptions(user.Id);
+                var model = new CompetitionGetAllViewModel();
 
-                return View(list);
+                model.Competitions = list;
+                model.PageSize = pageSize.Value;
+                model.CurrentPage = pageNumber.Value;
+                model.TotalPages = (int)Math.Ceiling((double)list.Count / pageSize.Value);
+
+                model.Competitions = list
+                    .Skip((pageNumber.Value - 1) * pageSize.Value)
+                    .Take(pageSize.Value)
+                    .ToList();
+
+                return View(model);
+            }
+
+            TempData["warning"] = "Грешка";
+            return View();
+        }
+
+
+        [HttpGet]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> GetAllForUser(int? pageSize = 10, int? pageNumber = 1)
+        {
+            var user = await _signInManager.UserManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var list = await _competitionService.GetAllExceptUsers(user.Id);
+                var model = new CompetitionGetAllViewModel();
+
+                model.Competitions = list;
+                model.PageSize = pageSize.Value;
+                model.CurrentPage = pageNumber.Value;
+                model.TotalPages = (int)Math.Ceiling((double)list.Count / pageSize.Value);
+
+                model.Competitions = list
+                    .Skip((pageNumber.Value - 1) * pageSize.Value)
+                    .Take(pageSize.Value)
+                    .ToList();
+
+                return View(model);
             }
 
             TempData["warning"] = "Грешка";
@@ -173,21 +202,62 @@ namespace KursovaRabota.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, Teacher")]
-
-        public async Task<IActionResult> GetAllInactive()
+        public async Task<IActionResult> GetAllUsers(Guid id, int? pageSize = 10, int? pageNumber = 1)
         {
-            var list = await _competitionService.GetAllInactive();
-            return View(list);
+            var users = await _competitionService.GetAllUsers(id);
+            
+
+            users.PageSize = pageSize.Value;
+            users.CurrentPage = pageNumber.Value;
+            users.TotalPages = (int)Math.Ceiling((double)users.Students.Count / pageSize.Value);
+
+            users.Students = users.Students
+                .Skip((pageNumber.Value - 1) * pageSize.Value)
+                .Take(pageSize.Value)
+                .ToList();
+
+            return View(users);
         }
 
         [HttpGet]
         [Authorize(Roles = "Admin, Teacher")]
-
-        public async Task<IActionResult> GetAllFilled()
+        public async Task<IActionResult> GetAllInactive(int? pageSize = 10, int? pageNumber = 1)
         {
-            var list = await _competitionService.GetAllFilled();
-            return View(list);
+            var list = await _competitionService.GetAllInactive();
+            var model = new CompetitionGetAllViewModel();
+            model.Competitions = list;
+
+            model.PageSize = pageSize.Value;
+            model.CurrentPage = pageNumber.Value;
+            model.TotalPages = (int)Math.Ceiling((double)list.Count / pageSize.Value);
+
+            model.Competitions = model.Competitions
+                .Skip((pageNumber.Value - 1) * pageSize.Value)
+                .Take(pageSize.Value)
+                .ToList();
+
+            return View(model);
         }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin, Teacher")]
+        public async Task<IActionResult> GetAllFilled(int? pageSize = 10, int? pageNumber = 1)
+        {
+            var list = await _competitionService.GetAllInactive();
+            var model = new CompetitionGetAllViewModel();
+            model.Competitions = list;
+
+            model.PageSize = pageSize.Value;
+            model.CurrentPage = pageNumber.Value;
+            model.TotalPages = (int)Math.Ceiling((double)list.Count / pageSize.Value);
+
+            model.Competitions = model.Competitions
+                .Skip((pageNumber.Value - 1) * pageSize.Value)
+                .Take(pageSize.Value)
+                .ToList();
+
+            return View(model);
+        }
+
     }
 }

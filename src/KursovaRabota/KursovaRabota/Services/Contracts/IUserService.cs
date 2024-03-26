@@ -19,5 +19,7 @@ namespace KursovaRabota.Services.Contracts
 
         Task Update(UpdateUserViewModel model);
 
+        Task Subscribe(Competition competition, ApplicationUser user);
+
     }
 }

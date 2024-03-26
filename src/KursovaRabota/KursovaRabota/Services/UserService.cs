@@ -1,4 +1,6 @@
-﻿using KursovaRabota.Data;
+﻿using System.Security.Claims;
+
+using KursovaRabota.Data;
 using KursovaRabota.Data.Models;
 using KursovaRabota.Services.Contracts;
 using KursovaRabota.ViewModels;
@@ -10,18 +12,26 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
 namespace KursovaRabota.Services
 {
     public class UserService : IUserService
     {
         private protected UserManager<ApplicationUser> userManager;
         private protected SignInManager<ApplicationUser> signInManager;
+        private protected ICompetitionService competitionService;
         private protected ApplicationDbContext context;
 
-        public UserService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ApplicationDbContext context)
+        public UserService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ICompetitionService competitionService, ApplicationDbContext context)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.competitionService = competitionService;
             this.context = context;
         }
 
@@ -126,6 +136,14 @@ namespace KursovaRabota.Services
                 context.Update(user);
                 await context.SaveChangesAsync();
             
+        }
+
+        public async Task Subscribe(Competition competition, ApplicationUser user)
+        {
+            user.Competitions.Add(competition);
+            competition.CurrentParticipants++;
+            context.Update(user);
+            await context.SaveChangesAsync();
         }
     }
 }

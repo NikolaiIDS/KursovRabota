@@ -18,5 +18,10 @@ namespace KursovaRabota.Services.Contracts
         Task Delete(Guid id);
 
         Task<GetCompUsersViewModel> GetAllUsers(Guid id);
+
+        Task<List<CompetitionGetViewModel>> GetAllExceptUsers(string userId);
+
+        Task<List<CompetitionGetViewModel>> GetAllSubscriptions(string userId);
+
     }
 }

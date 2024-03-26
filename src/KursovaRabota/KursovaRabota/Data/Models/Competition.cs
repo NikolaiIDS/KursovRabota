@@ -15,7 +15,8 @@ namespace KursovaRabota.Data.Models
         [StringLength(300, MinimumLength = 3)]
         public string Description { get; set; } = null!;
 
-        
+        public int CurrentParticipants { get; set; }
+
         public DateTime RegistrationDeadline { get; set; }
 
         

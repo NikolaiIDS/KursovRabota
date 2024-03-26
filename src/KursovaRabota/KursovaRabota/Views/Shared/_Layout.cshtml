@@ -50,6 +50,17 @@
                                 <a asp-controller="User" asp-action="GetAll" class="nav-link text-dark">Регистрирани потребители</a>
                             </li>
                         }
+
+                        @if (User.IsInRole("Student"))
+                        {
+                            <li class="nav-item">
+                                <a asp-controller="Competition" asp-action="GetAllForUser" class="nav-link text-dark">Всички състезания</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a asp-controller="Competition" asp-action="GetAllSubscriptions" class="nav-link text-dark">Мои състезания</a>
+                            </li>
+                        }
                     </ul>
                     @if (User.Identity.IsAuthenticated)
                     {

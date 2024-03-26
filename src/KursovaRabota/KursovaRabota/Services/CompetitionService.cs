@@ -5,6 +5,7 @@ using KursovaRabota.ViewModels.CompetitionVMs;
 using KursovaRabota.ViewModels.UserVMs;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 
 namespace KursovaRabota.Services
 {
@@ -142,6 +143,54 @@ namespace KursovaRabota.Services
                 return;
             }
             return;
+        }
+
+        public async Task<List<CompetitionGetViewModel>> GetAllExceptUsers(string currentUserId)
+        {
+
+            var competitions = await context.Competitions
+                .Where(c => c.Users.Any(p => p.Id != currentUserId))
+                .Where(x => x.IsFull != true)
+                .Select(x => new CompetitionGetViewModel
+                {
+                    CompetitionName = x.Name,
+                    CompetitionType = x.CompetitionType,
+                    Description = x.Description,
+                    Id = x.Id,
+                    IsActive = x.IsActive,
+                    IsFull = x.IsFull,
+                    Location = x.Location,
+                    MaxParticipants = x.MaxParticipants,
+                    Name = x.Name,
+                    RegistrationDeadline = x.RegistrationDeadline
+
+                })
+                .ToListAsync();
+
+            return competitions;
+        }
+
+        public async Task<List<CompetitionGetViewModel>> GetAllSubscriptions(string userId)
+        {
+            var competitions = await context.Competitions
+                      .Where(c => c.Users.Any(p => p.Id == userId))
+                      .Select(x => new CompetitionGetViewModel
+                      {
+                          CompetitionName = x.Name,
+                          CompetitionType = x.CompetitionType,
+                          Description = x.Description,
+                          Id = x.Id,
+                          IsActive = x.IsActive,
+                          IsFull = x.IsFull,
+                          Location = x.Location,
+                          MaxParticipants = x.MaxParticipants,
+                          Name = x.Name,
+                          RegistrationDeadline = x.RegistrationDeadline
+
+                      })
+                      .ToListAsync();
+
+            return competitions;
         }
     }
 }

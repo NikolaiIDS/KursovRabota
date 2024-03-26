@@ -5,6 +5,7 @@ using KursovaRabota.Data.Models;
 using KursovaRabota.Services.Contracts;
 using KursovaRabota.ViewModels.Enums;
 using KursovaRabota.ViewModels.UserVMs;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -179,14 +180,14 @@ namespace KursovaRabota.Controllers
                 DesiredRole = roles[0].ToString(),
                 TeacherSubjects = await context.Subjects.ToListAsync()
             };
-            if (user.TeacherSubjects!= null)
+            if (user.TeacherSubjects != null)
             {
-                foreach (var subject in user.TeacherSubjects) 
+                foreach (var subject in user.TeacherSubjects)
                 {
                     forView.SelectedSubjectIds.Add(subject.Id);
                 }
             }
-            
+
             return View(forView);
         }
 
@@ -194,8 +195,8 @@ namespace KursovaRabota.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateUser(Guid Id, UpdateUserViewModel model)
         {
-            if (Id != null) 
-            { 
+            if (Id != null)
+            {
                 model.Id = Id;
                 if (ModelState.IsValid)
                 {
@@ -222,7 +223,7 @@ namespace KursovaRabota.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(Guid Id)
         {
-            if (Id!= Guid.Empty)
+            if (Id != Guid.Empty)
             {
                 await userService.Delete(Id);
                 await context.SaveChangesAsync();
@@ -231,6 +232,27 @@ namespace KursovaRabota.Controllers
             }
             TempData["error"] = $"Възникна грешка!";
             return RedirectToAction("GetAll");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> Subscribe(Guid id)
+        {
+            var competition = await context.Competitions.FindAsync(id);
+            if(competition.CurrentParticipants != competition.MaxParticipants)
+            {
+                var user = await signInManager.UserManager.GetUserAsync(User);
+                if (user != null && competition != null)
+                {
+                    await userService.Subscribe(competition, user);
+                    return RedirectToAction("GetAllForUser", "Competition");
+
+                }
+                TempData["error"] = $"Възникна грешка!";
+                return RedirectToAction("GetAllForUser", "Competition");
+            }
+            TempData["error"] = $"Възникна грешка!";
+            return RedirectToAction("GetAllForUser", "Competition");
         }
 
     }

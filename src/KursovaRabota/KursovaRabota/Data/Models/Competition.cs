@@ -40,7 +40,6 @@ namespace KursovaRabota.Data.Models
 
         public List<ApplicationUser> Users { get; set; } = null!;
 
-
     }
 
 }

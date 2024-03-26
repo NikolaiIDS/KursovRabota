@@ -1,5 +1,6 @@
 ﻿using KursovaRabota.Data.Models;
 using KursovaRabota.ViewModels;
+using KursovaRabota.ViewModels.CompetitionVMs;
 using KursovaRabota.ViewModels.Enums;
 using KursovaRabota.ViewModels.UserVMs;
 
@@ -19,7 +20,7 @@ namespace KursovaRabota.Services.Contracts
 
         Task Update(UpdateUserViewModel model);
 
-        Task Subscribe(Competition competition, ApplicationUser user);
+        Task Subscribe(CompetitionGetViewModel competition, ApplicationUser user);
 
     }
 }

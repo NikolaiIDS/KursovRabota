@@ -23,5 +23,9 @@ namespace KursovaRabota.Services.Contracts
 
         Task<List<CompetitionGetViewModel>> GetAllSubscriptions(string userId);
 
+        Task<List<CompetitionGetViewModel>> GetAllInactive();
+
+        Task<List<CompetitionGetViewModel>> GetAllFilled();
+
     }
 }

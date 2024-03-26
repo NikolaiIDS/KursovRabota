@@ -15,7 +15,7 @@ namespace KursovaRabota.Data.Configurations
         {
             var admin = new ApplicationUser 
             { 
-                Id = "9de92530-126f-44fe-8846-f5099e0e1cc3",
+                Id = "9de92530-1676f-44fe-8846-f5099e0e1cc3",
                 FirstName = "admin",
                 LastName = "admin",
                 Email = "admin@email.com",

@@ -12,7 +12,7 @@ namespace KursovaRabota.Data.Configurations
         {
             var teacher = new ApplicationUser
             {
-                Id = "9de92530-126f-44fe-8846-f5099e0e1cc4",
+                Id = "a7594af2-ae37-4217-a1d8-891f590692b3",
                 FirstName = "teacher",
                 LastName = "teacher",
                 Email = "teacher@email.com",
@@ -26,7 +26,7 @@ namespace KursovaRabota.Data.Configurations
 
             var student = new ApplicationUser
             {
-                Id = "9de92530-126f-44fe-8846-f5099e0e1cc5",
+                Id = "0778238c-1e1b-4e5d-9ea6-1a01e9264086",
                 FirstName = "student",
                 LastName = "student",
                 Email = "student@email.com",

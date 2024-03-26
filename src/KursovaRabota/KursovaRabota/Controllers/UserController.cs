@@ -16,17 +16,15 @@ namespace KursovaRabota.Controllers
     public class UserController : Controller
     {
         private protected IUserService userService;
+        private protected ICompetitionService competitionService;
         private protected UserManager<ApplicationUser> userManager;
         private protected ApplicationDbContext context;
         private protected SignInManager<ApplicationUser> signInManager;
 
-        public UserController
-            (IUserService userService,
-            UserManager<ApplicationUser> userManager,
-            ApplicationDbContext context,
-            SignInManager<ApplicationUser> signInManager)
+        public UserController(IUserService userService, ICompetitionService competitionService, UserManager<ApplicationUser> userManager, ApplicationDbContext context, SignInManager<ApplicationUser> signInManager)
         {
             this.userService = userService;
+            this.competitionService = competitionService;
             this.userManager = userManager;
             this.context = context;
             this.signInManager = signInManager;
@@ -238,7 +236,7 @@ namespace KursovaRabota.Controllers
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> Subscribe(Guid id)
         {
-            var competition = await context.Competitions.FindAsync(id);
+            var competition = await competitionService.GetById(id);
             if(competition.CurrentParticipants != competition.MaxParticipants)
             {
                 var user = await signInManager.UserManager.GetUserAsync(User);

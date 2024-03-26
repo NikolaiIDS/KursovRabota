@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using KursovaRabota.ViewModels.CompetitionVMs;
 
 namespace KursovaRabota.Services
 {
@@ -138,12 +139,38 @@ namespace KursovaRabota.Services
             
         }
 
-        public async Task Subscribe(Competition competition, ApplicationUser user)
+        public async Task Subscribe(CompetitionGetViewModel competition, ApplicationUser user)
         {
-            user.Competitions.Add(competition);
-            competition.CurrentParticipants++;
-            context.Update(user);
-            await context.SaveChangesAsync();
+            user.Competitions = new List<Competition>();
+            if (competition.Id != Guid.Empty)
+            {
+                var competitionForDb = await context.Competitions.Select(x=> new Competition
+                {
+                    Id = competition.Id,
+                    Name = competition.Name,
+                    CompetitionType = competition.CompetitionType,
+                    Description = competition.Description,
+                    IsActive = competition.IsActive,
+                    IsFull = competition.IsFull,
+                    Location = competition.Location,
+                    MaxParticipants = competition.MaxParticipants,
+                    RegistrationDeadline = competition.RegistrationDeadline,
+                    Users = competition.Users,
+                    Subject = competition.Subject,
+                    CurrentParticipants = competition.CurrentParticipants
+                }).FirstOrDefaultAsync();
+
+                if (competitionForDb.MaxParticipants == competitionForDb.CurrentParticipants)
+                {
+                    competitionForDb.IsFull = true;
+                }
+
+                user.Competitions.Add(competitionForDb);
+                competitionForDb.CurrentParticipants++;
+                context.Update(user);
+                context.Update(competitionForDb);
+                await context.SaveChangesAsync();
+            }
         }
     }
 }

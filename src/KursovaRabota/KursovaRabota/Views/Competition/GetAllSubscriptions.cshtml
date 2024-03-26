@@ -1,15 +1,7 @@
 ﻿@using KursovaRabota.ViewModels.CompetitionVMs;
 @model List<CompetitionGetViewModel>
 
-@{
-    ViewData["Title"] = "Всички Състезания";
-}
-
-<h1>Всички Състезания</h1>
-
-<div class="mb-3">
-    <a asp-controller="Competition" asp-action="Add" class="btn btn-success">Добави Състезание</a>
-</div>
+<h1>Всички Състезания за които сте записани</h1>
 
 @if (Model.Any())
 {
@@ -21,6 +13,7 @@
                 <th>Предмет</th>
                 <th>Тип</th>
                 <th>Местоположение</th>
+                <th>Брой Записани Участници</th>
                 <th>Максимален Брой Участници</th>
                 <th>Крайна Дата за Регистрация</th>
                 <th>Действия</th>
@@ -35,37 +28,9 @@
                     <td>@competition.Subject.SubjectName</td>
                     <td>@competition.CompetitionType.Type</td>
                     <td>@competition.Location</td>
+                    <td>@competition.CurrentParticipants</td>
                     <td>@competition.MaxParticipants</td>
                     <td>@competition.RegistrationDeadline.ToString("yyyy-MM-dd")</td>
-                    <td>
-                        @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
-                        {
-                            <form asp-controller="Competition" asp-action="GetAllUsers" method="get">
-                                <input type="hidden" name="id" value="@competition.Id" />
-                                <button type="submit" class="btn btn-primary">Преглед на Потребители</button>
-                            </form>
-                            <form asp-controller="Competition" asp-action="Update" method="get">
-                                <input type="hidden" name="id" value="@competition.Id" />
-                                <button type="submit" class="btn btn-secondary">Промяна на състезание</button>
-                            </form>
-                        }
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <form asp-controller="Competition" asp-action="Delete" method="post">
-                                <input type="hidden" name="id" value="@competition.Id" />
-                                <button type="submit" class="btn btn-danger">Деактивиране</button>
-                            </form>
-                        }
-                        @if (User.IsInRole("Student"))
-                        {
-                            <form asp-controller="User" asp-action="Subscribe" method="post">
-                                <input type="hidden" name="id" value="@competition.Id" />
-                                <button type="submit" class="btn btn-primary">Записване</button>
-                            </form>
-
-                        }
-                        
-                    </td>
                 </tr>
             }
         </tbody>
@@ -73,7 +38,7 @@
 }
 else
 {
-    <p>Няма налични състезания.</p>
+    <p>Не сте записани за никакви състезания.</p>
 }
 
 @section Scripts {

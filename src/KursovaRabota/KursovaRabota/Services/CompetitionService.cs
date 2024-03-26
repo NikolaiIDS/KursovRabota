@@ -52,22 +52,20 @@ namespace KursovaRabota.Services
 
         public async Task<GetCompUsersViewModel> GetAllUsers(Guid id)
         {
-            var model = new GetCompUsersViewModel();
+            var users = await context.Competitions
+               .Where(u => u.Id == id)
+               .Select(x => new GetCompUsersViewModel
+               {
+                   Students = x.Users
+               }).FirstOrDefaultAsync();
 
-            var competition = await context.Competitions
-                .Include(x => x.Users)
-                .FirstOrDefaultAsync(x => x.Id == id);
-
-            model.Students = competition.Users;
-
-            return model;
-
+            return users;
         }
 
         public async Task<CompetitionGetViewModel> GetById(Guid id)
         {
             var viewModel = await context.Competitions
-                .Where(x => x.IsFull == false && x.IsActive == true)
+                .Where(x => x.Id == id)
                 .Include(x => x.Users)
                 .Select(x => new CompetitionGetViewModel
                 {
@@ -80,7 +78,10 @@ namespace KursovaRabota.Services
                     IsFull = x.IsFull,
                     Location = x.Location,
                     MaxParticipants = x.MaxParticipants,
-                    RegistrationDeadline = x.RegistrationDeadline
+                    RegistrationDeadline = x.RegistrationDeadline,
+                    CompetitionName = x.Name,
+                    Users = x.Users,
+                    CurrentParticipants = x.CurrentParticipants
                 }).FirstOrDefaultAsync();
 
             return viewModel;
@@ -127,7 +128,9 @@ namespace KursovaRabota.Services
                     IsFull = x.IsFull,
                     Location = x.Location,
                     MaxParticipants = x.MaxParticipants,
-                    RegistrationDeadline = x.RegistrationDeadline
+                    RegistrationDeadline = x.RegistrationDeadline,
+                    CurrentParticipants = x.CurrentParticipants,
+                    CompetitionName = x.Name
                 }).ToListAsync();
 
             return viewModel;
@@ -149,7 +152,88 @@ namespace KursovaRabota.Services
         {
 
             var competitions = await context.Competitions
-                .Where(c => c.Users.Any(p => p.Id != currentUserId))
+                .Where(c => !c.Users.Any(u => u.Id == currentUserId))
+                .Where(x => x.IsFull != true)
+                .Where(x => x.IsActive == true)
+                .Select(x => new CompetitionGetViewModel
+                {
+                    CompetitionName = x.Name,
+                    CompetitionType = x.CompetitionType,
+                    Description = x.Description,
+                    Id = x.Id,
+                    IsActive = x.IsActive,
+                    IsFull = x.IsFull,
+                    Location = x.Location,
+                    MaxParticipants = x.MaxParticipants,
+                    Name = x.Name,
+                    RegistrationDeadline = x.RegistrationDeadline,
+                    Users = x.Users,
+                    Subject = x.Subject,
+                    CurrentParticipants = x.CurrentParticipants,
+                })
+                .ToListAsync();
+
+            return competitions;
+        }
+
+        public async Task<List<CompetitionGetViewModel>> GetAllFilled()
+        {
+
+            var competitions = await context.Competitions
+                .Where(x => x.IsFull != true)
+                .Where(x => x.IsActive == true)
+                .Select(x => new CompetitionGetViewModel
+                {
+                    CompetitionName = x.Name,
+                    CompetitionType = x.CompetitionType,
+                    Description = x.Description,
+                    Id = x.Id,
+                    IsActive = x.IsActive,
+                    IsFull = x.IsFull,
+                    Location = x.Location,
+                    MaxParticipants = x.MaxParticipants,
+                    Name = x.Name,
+                    RegistrationDeadline = x.RegistrationDeadline,
+                    Users = x.Users,
+                    Subject = x.Subject,
+                    CurrentParticipants = x.CurrentParticipants,
+                })
+                .ToListAsync();
+
+            return competitions;
+        }
+
+        public async Task<List<CompetitionGetViewModel>> GetAllInactive()
+        {
+
+            var competitions = await context.Competitions
+                .Where(x => x.IsFull != true)
+                .Where(x => x.IsActive != true)
+                .Select(x => new CompetitionGetViewModel
+                {
+                    CompetitionName = x.Name,
+                    CompetitionType = x.CompetitionType,
+                    Description = x.Description,
+                    Id = x.Id,
+                    IsActive = x.IsActive,
+                    IsFull = x.IsFull,
+                    Location = x.Location,
+                    MaxParticipants = x.MaxParticipants,
+                    Name = x.Name,
+                    RegistrationDeadline = x.RegistrationDeadline,
+                    Users = x.Users,
+                    Subject = x.Subject,
+                    CurrentParticipants = x.CurrentParticipants,
+                })
+                .ToListAsync();
+
+            return competitions;
+        }
+
+        public async Task<List<CompetitionGetViewModel>> GetAllSubscriptions(string userId)
+        {
+            var competitions = await context.Competitions
+                .Where(c => c.Users.Any(u => u.Id == userId))
                 .Where(x => x.IsFull != true)
                 .Select(x => new CompetitionGetViewModel
                 {
@@ -162,33 +246,12 @@ namespace KursovaRabota.Services
                     Location = x.Location,
                     MaxParticipants = x.MaxParticipants,
                     Name = x.Name,
-                    RegistrationDeadline = x.RegistrationDeadline
-
+                    RegistrationDeadline = x.RegistrationDeadline,
+                    Users = x.Users,
+                    Subject = x.Subject,
+                    CurrentParticipants = x.CurrentParticipants,
                 })
                 .ToListAsync();
-
-            return competitions;
-        }
-
-        public async Task<List<CompetitionGetViewModel>> GetAllSubscriptions(string userId)
-        {
-            var competitions = await context.Competitions
-                      .Where(c => c.Users.Any(p => p.Id == userId))
-                      .Select(x => new CompetitionGetViewModel
-                      {
-                          CompetitionName = x.Name,
-                          CompetitionType = x.CompetitionType,
-                          Description = x.Description,
-                          Id = x.Id,
-                          IsActive = x.IsActive,
-                          IsFull = x.IsFull,
-                          Location = x.Location,
-                          MaxParticipants = x.MaxParticipants,
-                          Name = x.Name,
-                          RegistrationDeadline = x.RegistrationDeadline
-
-                      })
-                      .ToListAsync();
 
             return competitions;
         }

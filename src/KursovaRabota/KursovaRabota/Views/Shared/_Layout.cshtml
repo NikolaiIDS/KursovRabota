@@ -4,10 +4,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - KursovaRabota</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/KursovaRabota.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+
 </head>
 <body>
     <header>
@@ -24,44 +26,44 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Начална страница</a>
                         </li>
 
-
                         @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
                         {
-                            <li class="nav-item">
-                                <a asp-controller="Subject" asp-action="Add" class="nav-link text-dark">Добави предмет</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a asp-controller="CompetitionType" asp-action="Add" class="nav-link text-dark">Добави тип състезание</a>
-                            </li>
-
-
-                            <li class="nav-item">
-                                <a asp-controller="Competition" asp-action="GetAll" class="nav-link text-dark">Виж състезания</a>
-                            </li>
-                        }
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item">
-                                <a asp-controller="User" asp-action="GetAllUnregistered" class="nav-link text-dark">Нерегистрирани потребители</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a asp-controller="User" asp-action="GetAll" class="nav-link text-dark">Регистрирани потребители</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Администраторски опции
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="adminDropdown">
+                                    <a class="dropdown-item" asp-controller="Subject" asp-action="Add">Добави предмет</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" asp-controller="CompetitionType" asp-action="Add">Добави тип състезание</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" asp-controller="Competition" asp-action="GetAll">Виж състезания</a>
+                                    <a class="dropdown-item" asp-controller="Competition" asp-action="GetAllInactive">Деактивирани състезания</a>
+                                    <a class="dropdown-item" asp-controller="Competition" asp-action="GetAllFilled">Запълнени състезания</a>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" asp-controller="User" asp-action="GetAllUnregistered">Нерегистрирани потребители</a>
+                                        <a class="dropdown-item" asp-controller="User" asp-action="GetAll">Регистрирани потребители</a>
+                                    }
+                                </div>
                             </li>
                         }
 
                         @if (User.IsInRole("Student"))
                         {
-                            <li class="nav-item">
-                                <a asp-controller="Competition" asp-action="GetAllForUser" class="nav-link text-dark">Всички състезания</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a asp-controller="Competition" asp-action="GetAllSubscriptions" class="nav-link text-dark">Мои състезания</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" id="studentDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Ученически опции
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="studentDropdown">
+                                    <a class="dropdown-item" asp-controller="Competition" asp-action="GetAllForUser">Всички състезания</a>
+                                    <a class="dropdown-item" asp-controller="Competition" asp-action="GetAllSubscriptions">Мои състезания</a>
+                                </div>
                             </li>
                         }
                     </ul>
+
                     @if (User.Identity.IsAuthenticated)
                     {
                         <div>

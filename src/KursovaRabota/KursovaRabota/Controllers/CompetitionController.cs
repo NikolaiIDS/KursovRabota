@@ -51,7 +51,9 @@ namespace KursovaRabota.Controllers
         public async Task<IActionResult> GetAll()
         {
             var list = await _competitionService.GetAll();
-            return View(list);
+            var model = new CompetitionGetAllViewModel();
+            model.Competitions = list;
+            return View(model);
         }
 
         [HttpGet]
@@ -161,13 +163,31 @@ namespace KursovaRabota.Controllers
             if (user != null)
             {
 
-                var list = await _competitionService.GetAllExceptUsers(user.Id);
+                var list = await _competitionService.GetAllSubscriptions(user.Id);
 
                 return View(list);
             }
 
             TempData["warning"] = "Грешка";
             return View();
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin, Teacher")]
+
+        public async Task<IActionResult> GetAllInactive()
+        {
+            var list = await _competitionService.GetAllInactive();
+            return View(list);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin, Teacher")]
+
+        public async Task<IActionResult> GetAllFilled()
+        {
+            var list = await _competitionService.GetAllFilled();
+            return View(list);
         }
     }
 }

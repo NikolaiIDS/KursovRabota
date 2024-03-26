@@ -1,15 +1,7 @@
 ﻿@using KursovaRabota.ViewModels.CompetitionVMs;
 @model List<CompetitionGetViewModel>
 
-@{
-    ViewData["Title"] = "Всички Състезания";
-}
-
 <h1>Всички Състезания</h1>
-
-<div class="mb-3">
-    <a asp-controller="Competition" asp-action="Add" class="btn btn-success">Добави Състезание</a>
-</div>
 
 @if (Model.Any())
 {
@@ -21,6 +13,7 @@
                 <th>Предмет</th>
                 <th>Тип</th>
                 <th>Местоположение</th>
+                <th>Брой Записани Участници</th>
                 <th>Максимален Брой Участници</th>
                 <th>Крайна Дата за Регистрация</th>
                 <th>Действия</th>
@@ -35,6 +28,7 @@
                     <td>@competition.Subject.SubjectName</td>
                     <td>@competition.CompetitionType.Type</td>
                     <td>@competition.Location</td>
+                    <td>@competition.CurrentParticipants</td>
                     <td>@competition.MaxParticipants</td>
                     <td>@competition.RegistrationDeadline.ToString("yyyy-MM-dd")</td>
                     <td>

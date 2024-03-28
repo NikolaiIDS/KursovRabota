@@ -17,14 +17,16 @@ namespace KursovaRabota.Controllers
     {
         private protected IUserService userService;
         private protected ICompetitionService competitionService;
+        private protected ISubjectService subjectService;
         private protected UserManager<ApplicationUser> userManager;
         private protected ApplicationDbContext context;
         private protected SignInManager<ApplicationUser> signInManager;
 
-        public UserController(IUserService userService, ICompetitionService competitionService, UserManager<ApplicationUser> userManager, ApplicationDbContext context, SignInManager<ApplicationUser> signInManager)
+        public UserController(IUserService userService, ICompetitionService competitionService, ISubjectService subjectService, UserManager<ApplicationUser> userManager, ApplicationDbContext context, SignInManager<ApplicationUser> signInManager)
         {
             this.userService = userService;
             this.competitionService = competitionService;
+            this.subjectService = subjectService;
             this.userManager = userManager;
             this.context = context;
             this.signInManager = signInManager;
@@ -153,9 +155,12 @@ namespace KursovaRabota.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAll()
         {
-            var users = await userService.GetAll();
+            var model = new DisplayAllUsersViewModel();
 
-            return View(users);
+            model.Subjects = await subjectService.GetAll();
+            model.Users = await userService.GetAll();
+
+            return View(model);
         }
 
         [HttpGet]

@@ -1,4 +1,5 @@
 ﻿using KursovaRabota.Data.Models;
+using KursovaRabota.ViewModels.SubjectVMs;
 
 using System.ComponentModel.DataAnnotations;
 
@@ -40,5 +41,8 @@ namespace KursovaRabota.ViewModels
         public bool Approved { get; set; }
 
         public List<Competition> Competitions { get; set; }
+
+        public List<SubjectViewModel>? TeacherSubjects { get; set; } = null!;
+
     }
 }

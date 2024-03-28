@@ -56,10 +56,11 @@ namespace KursovaRabota.Services
                     Email = x.Email,
                     PhoneNumber = x.PhoneNumber,
                     Approved = x.Approved,
+                    TeacherSubjects = x.TeacherSubjects.Select(y => new ViewModels.SubjectVMs.SubjectViewModel { Id = y.Id, SubjectName = y.SubjectName }).ToList(),
                     DesiredRole = context.UserRoles
-               .Where(ur => ur.UserId == x.Id)
-               .Join(context.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => r.Name)
-               .FirstOrDefault()
+                    .Where(ur => ur.UserId == x.Id)
+                    .Join(context.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => r.Name)
+                    .FirstOrDefault()
                 })
                 .ToListAsync();
 
@@ -79,6 +80,7 @@ namespace KursovaRabota.Services
                     Email = x.Email,
                     PhoneNumber = x.PhoneNumber,
                     Approved = x.Approved,
+                    TeacherSubjects = x.TeacherSubjects.Select(y => new ViewModels.SubjectVMs.SubjectViewModel { Id = y.Id, SubjectName = y.SubjectName }).ToList(),
                     DesiredRole = context.UserRoles
                .Where(ur => ur.UserId == x.Id)
                .Join(context.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => r.Name)
@@ -123,20 +125,20 @@ namespace KursovaRabota.Services
                 }
             }
 
-          
-                var user = await userManager.FindByEmailAsync(model.Email);
-                user.UserName = model.UserName;
-                user.NormalizedUserName = model.UserName.ToUpper();
-                user.PhoneNumber = model.PhoneNumber;
-                user.Email = model.Email;
-                user.NormalizedEmail = model.Email.ToUpper();
-                user.FirstName = model.FirstName;
-                user.LastName = model.LastName;
-                user.TeacherSubjects = model.TeacherSubjects;
 
-                context.Update(user);
-                await context.SaveChangesAsync();
-            
+            var user = await userManager.FindByEmailAsync(model.Email);
+            user.UserName = model.UserName;
+            user.NormalizedUserName = model.UserName.ToUpper();
+            user.PhoneNumber = model.PhoneNumber;
+            user.Email = model.Email;
+            user.NormalizedEmail = model.Email.ToUpper();
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.TeacherSubjects = model.TeacherSubjects;
+
+            context.Update(user);
+            await context.SaveChangesAsync();
+
         }
 
         public async Task Subscribe(CompetitionGetViewModel competition, ApplicationUser user)
@@ -144,7 +146,7 @@ namespace KursovaRabota.Services
             user.Competitions = new List<Competition>();
             if (competition.Id != Guid.Empty)
             {
-                var competitionForDb = await context.Competitions.Select(x=> new Competition
+                var competitionForDb = await context.Competitions.Select(x => new Competition
                 {
                     Id = competition.Id,
                     Name = competition.Name,

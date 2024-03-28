@@ -1,27 +1,76 @@
-﻿@using KursovaRabota.ViewModels
-@model List<DisplayUserViewModel>
+﻿@using KursovaRabota.ViewModels.UserVMs;
+@model DisplayAllUsersViewModel
+
 
 <h2>Потребители</h2>
 
-@foreach (var user in Model)
+<form id="filterForm" method="get" asp-action="GetAll" asp-controller="User">
+    <label asp-for="SelectedSubject.SubjectName">Филтрирай по име на предмет:</label>
+    <select id="subjectName" name="SelectedSubject.SubjectId">
+        <option value="">Избери предмет</option>
+        @foreach (var subject in Model.Subjects)
+        {
+            <option value="@subject">@subject.SubjectName</option>
+        }
+    </select>
+</form>
+@if (Model.Users != null)
 {
-    <div class="card" style="width: 18rem; margin-bottom: 20px;">
-        <div class="card-body">
-            <h5 class="card-title">@user.FirstName @user.LastName</h5>
-            <p class="card-text">
-                Потребителско име: @user.UserName<br /> Електронна поща: @user.Email<br />Телефон: @user.PhoneNumber
-            </p>
-            @if (!string.IsNullOrEmpty(user.DesiredRole))
+    @foreach (var user in Model.Users)
+    {
+        if (user.TeacherSubjects.Count != 0 || Model.SelectedSubject!=null)
+        {
+            if (user.TeacherSubjects.Contains(Model.SelectedSubject) && string.IsNullOrEmpty(Model.SelectedSubject.SubjectName))
             {
-                <p class="card-text">Желана роля: @user.DesiredRole</p>
+                <div class="card" style="width: 18rem; margin-bottom: 20px;">
+                    <div class="card-body">
+                        <h5 class="card-title">@user.FirstName @user.LastName</h5>
+                        <p class="card-text">
+                            Потребителско име: @user.UserName<br /> Електронна поща: @user.Email<br />Телефон: @user.PhoneNumber
+                        </p>
+                        @if (!string.IsNullOrEmpty(user.DesiredRole))
+                        {
+                            <p class="card-text">Желана роля: @user.DesiredRole</p>
+                        }
+                        <form method="get">
+                            <button asp-action="UpdateUser" asp-controller="User" type="submit" asp-route-Id="@user.Id" class="btn btn-primary">Промени</button>
+                        </form>
+                        <form method="get">
+                            <button asp-action="Delete" asp-controller="User" type="submit" class="btn btn-primary" asp-route-Id="@user.Id">Изтрий</button>
+                        </form>
+                    </div>
+                </div>
+                
             }
-            <form method="get">
-                <button asp-action="UpdateUser" asp-controller="User" type="submit" asp-route-Id="@user.Id" class="btn btn-primary">Промени</button>
-            </form>
-            <form method="get">
-                <button asp-action="Delete" asp-controller="User" type="submit" class="btn btn-primary" asp-route-Id="@user.Id">Изтрий</button>
-            </form>
-        </div>
-    </div>
-}
+        }
+        else
+        {
+            <div class="card" style="width: 18rem; margin-bottom: 20px;">
+                <div class="card-body">
+                    <h5 class="card-title">@user.FirstName @user.LastName</h5>
+                    <p class="card-text">
+                        Потребителско име: @user.UserName<br /> Електронна поща: @user.Email<br />Телефон: @user.PhoneNumber
+                    </p>
+                    @if (!string.IsNullOrEmpty(user.DesiredRole))
+                    {
+                        <p class="card-text">Желана роля: @user.DesiredRole</p>
+                    }
+                    <form method="get">
+                        <button asp-action="UpdateUser" asp-controller="User" type="submit" asp-route-Id="@user.Id" class="btn btn-primary">Промени</button>
+                    </form>
+                    <form method="get">
+                        <button asp-action="Delete" asp-controller="User" type="submit" class="btn btn-primary" asp-route-Id="@user.Id">Изтрий</button>
+                    </form>
+                </div>
+            </div>
+        
+        }
 
+    }
+}else {<p>Няма потребтели</p>}
+
+<script>
+    document.getElementById('subjectName').addEventListener('change', function() {
+        document.getElementById('filterForm').submit();
+    });
+</script>

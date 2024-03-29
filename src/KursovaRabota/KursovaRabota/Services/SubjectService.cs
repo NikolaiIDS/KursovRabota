@@ -41,5 +41,14 @@ namespace KursovaRabota.Services
 
             return list;
         }
+
+        public async Task<SubjectViewModel> GetById(Guid id)
+        {
+            var model = await context.Subjects
+                .Where(x => x.Id == id)
+                .Select(x => new SubjectViewModel { Id = x.Id, SubjectName = x.SubjectName}).FirstOrDefaultAsync();
+
+                return model;
+        }
     }
 }

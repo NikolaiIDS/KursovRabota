@@ -144,18 +144,26 @@ namespace KursovaRabota.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetAllUnregistered()
+        public async Task<IActionResult> GetAllUnregistered(DisplayAllUsersViewModel? model)
         {
-            var users = await userService.GetAllUnregistered();
+            if (model.SelectedSubject != null)
+            {
+                model.SelectedSubject = await subjectService.GetById(model.SelectedSubject.Id);
+            }
 
-            return View(users);
+            model.Users = await userService.GetAllUnregistered();
+
+            return View(model);
         }
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(DisplayAllUsersViewModel? model)
         {
-            var model = new DisplayAllUsersViewModel();
+            if (model.SelectedSubject != null)
+            {
+                model.SelectedSubject = await subjectService.GetById(model.SelectedSubject.Id);
+            }
 
             model.Subjects = await subjectService.GetAll();
             model.Users = await userService.GetAll();
@@ -242,7 +250,7 @@ namespace KursovaRabota.Controllers
         public async Task<IActionResult> Subscribe(Guid id)
         {
             var competition = await competitionService.GetById(id);
-            if(competition.CurrentParticipants != competition.MaxParticipants)
+            if (competition.CurrentParticipants != competition.MaxParticipants)
             {
                 var user = await signInManager.UserManager.GetUserAsync(User);
                 if (user != null && competition != null)

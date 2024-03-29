@@ -4,7 +4,7 @@
 
 <h2>Нерегистрирани потребители</h2>
 
-<form id="filterForm">
+@* <form id="filterForm">
     <label for="subjectName">Филтрирай по име на предмет:</label>
     <select id="subjectName" name="subjectName">
         <option value="">Избери предмет</option>
@@ -14,13 +14,13 @@
         }
 
     </select>
-</form>
+</form> *@
 @if (Model.Users != null)
 {
     @foreach (var user in Model.Users)
     {
-        if (user.TeacherSubjects.Contains(Model.SelectedSubject) || string.IsNullOrEmpty(Model.SelectedSubject.SubjectName))
-        {
+        @* if (user.TeacherSubjects.Contains(Model.SelectedSubject) || string.IsNullOrEmpty(Model.SelectedSubject.SubjectName))
+        { *@
             <div class="card" style="width: 18rem; margin-bottom: 20px;">
                 <div class="card-body">
                     <h5 class="card-title">@user.FirstName @user.LastName</h5>
@@ -38,7 +38,7 @@
             </div>
             // Break the loop to avoid duplicating user cards
             break;
-        }
+        @* } *@
     }
 }
 else

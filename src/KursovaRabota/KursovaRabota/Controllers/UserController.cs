@@ -1,4 +1,5 @@
-﻿using System.Reflection.Metadata.Ecma335;
+﻿using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 
 using KursovaRabota.Data;
 using KursovaRabota.Data.Models;
@@ -160,13 +161,28 @@ namespace KursovaRabota.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAll(DisplayAllUsersViewModel? model)
         {
+            model.Subjects = await subjectService.GetAll();
+            var users = await userService.GetAll();
+
             if (model.SelectedSubject != null)
             {
+                model.Users = new List<ViewModels.DisplayUserViewModel>();
                 model.SelectedSubject = await subjectService.GetById(model.SelectedSubject.Id);
+                foreach (var item in users)
+                {
+                    if (item.TeacherSubjects!=null && item.TeacherSubjects.Any(subject => subject.SubjectName == model.SelectedSubject.SubjectName))
+                    {
+                        model.Users.Add(item);
+                    }
+                }
+            }
+            else
+            {
+                model.Users = users;
             }
 
-            model.Subjects = await subjectService.GetAll();
-            model.Users = await userService.GetAll();
+            //other checks
+            
 
             return View(model);
         }

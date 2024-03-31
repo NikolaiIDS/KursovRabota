@@ -1,0 +1,24 @@
+﻿@using KursovaRabota.ViewModels.CompetitionTypeVMs;
+@model CompetitionTypeViewModel
+
+
+
+<form id="updateForm" asp-action="UpdatePOST" asp-controller="CompetitionType" method="post">
+    <div class="form-group">
+        <label asp-for="Type"></label>
+        <input asp-for="Type" class="form-control" />
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+    <input type="hidden" name="id" id="competitionTypeId" value="@Model.Id" /> 
+    <button type="button" onclick="confirmUpdate()" class="btn btn-primary">Промяна</button>
+</form>
+
+<script>
+    function confirmUpdate() {
+        var result = confirm("Сигурни ли сте, че искате да промените вида състезание?");
+
+        if (result) {
+            document.getElementById('updateForm').submit();
+        }
+    }
+</script>

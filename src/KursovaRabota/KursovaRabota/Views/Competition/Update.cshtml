@@ -26,6 +26,12 @@
     </div>
 
     <div class="form-group">
+        <label asp-for="DateOfConduct">Дата на провеждане:</label>
+        <input asp-for="DateOfConduct" class="form-control" type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" value="@DateTime.Now.AddDays(7).ToString("yyyy-MM-dd")" />
+        <span asp-validation-for="DateOfConduct" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
         <label asp-for="Location">Местоположение:</label>
         <input asp-for="Location" class="form-control" />
         <span asp-validation-for="Location" class="text-danger"></span>

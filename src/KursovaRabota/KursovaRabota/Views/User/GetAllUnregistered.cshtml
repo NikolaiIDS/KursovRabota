@@ -4,41 +4,58 @@
 
 <h2>Нерегистрирани потребители</h2>
 
-@* <form id="filterForm">
-    <label for="subjectName">Филтрирай по име на предмет:</label>
-    <select id="subjectName" name="subjectName">
-        <option value="">Избери предмет</option>
-        @foreach (var subject in Model.Subjects)
-        {
-            <option value="@subject.SubjectName">@subject.SubjectName</option>
-        }
+<div>
+    <form style="display:flex; flex-direction:row" method="get" asp-action="GetAllUnregistered" asp-controller="User">
+        <div style="display:flex" class="form-group">
+            <label asp-for="@Model.Name">Филтрирай по Име:</label>
+            <input asp-for="@Model.Name" class="form-control">
+            <span asp-validation-for="@Model.Name" class="text-danger"></span>
+        </div>
 
-    </select>
-</form> *@
+        <div style="display:flex" class="form-group">
+            <label asp-for="@Model.Class">Филтрирай по Клас:</label>
+            <input asp-for="@Model.Class" class="form-control">
+            <span asp-validation-for="@Model.Class" class="text-danger"></span>
+        </div>
+
+        <div style="display:flex" class="form-group">
+            <label for="Subject">Предмет:</label>
+            <select id="subjectDropdown" asp-for="SelectedSubject.Id" asp-items="@(new SelectList(Model.Subjects, "Id", "SubjectName"))" class="form-control">
+                <option value="">Избери предмет</option>
+            </select>
+        </div>
+
+        <div style="display:flex" class="form-group">
+            <label for="Subject">Сортиране по дата:</label>
+            <select id="subjectDropdown" asp-for="SortByName" class="form-control">
+                <option value=true>Сортиране в низходящ ред</option>
+                <option value=false>Сортиране във възходящ ред</option>
+            </select>
+            <span asp-validation-for="SortByName" class="text-danger"></span>
+        </div>
+        <button style="display:flex" class="btn btn-primary" type="submit">Филтрирай</button>
+    </form>
+
+</div>
 @if (Model.Users != null)
 {
     @foreach (var user in Model.Users)
     {
-        @* if (user.TeacherSubjects.Contains(Model.SelectedSubject) || string.IsNullOrEmpty(Model.SelectedSubject.SubjectName))
-        { *@
-            <div class="card" style="width: 18rem; margin-bottom: 20px;">
-                <div class="card-body">
-                    <h5 class="card-title">@user.FirstName @user.LastName</h5>
-                    <p class="card-text">
-                        Потребителско име: @user.UserName<br /> Електронна поща: @user.Email<br />Телефон: @user.PhoneNumber
-                    </p>
-                    @if (!string.IsNullOrEmpty(user.DesiredRole))
-                    {
-                        <p class="card-text">Желана роля: @user.DesiredRole</p>
-                    }
-                    <form method="get">
-                        <button asp-action="ApproveUser" asp-controller="User" type="submit" class="btn btn-primary" asp-route-id="@user.Id">Одобри</button>
-                    </form>
-                </div>
+        <div class="card" style="width: 18rem; margin-bottom: 20px;">
+            <div class="card-body">
+                <h5 class="card-title">@user.FirstName @user.LastName</h5>
+                <p class="card-text">
+                    Потребителско име: @user.UserName<br /> Електронна поща: @user.Email<br />Телефон: @user.PhoneNumber
+                </p>
+                @if (!string.IsNullOrEmpty(user.DesiredRole))
+                {
+                    <p class="card-text">Желана роля: @user.DesiredRole</p>
+                }
+                <form method="get">
+                    <button asp-action="ApproveUser" asp-controller="User" type="submit" class="btn btn-primary" asp-route-id="@user.Id">Одобри</button>
+                </form>
             </div>
-            // Break the loop to avoid duplicating user cards
-            break;
-        @* } *@
+        </div>
     }
 }
 else

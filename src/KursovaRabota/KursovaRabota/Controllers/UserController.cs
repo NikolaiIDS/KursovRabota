@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Reflection.Metadata.Ecma335;
+﻿using System.Runtime.InteropServices;
 
 using KursovaRabota.Data;
 using KursovaRabota.Data.Models;
@@ -147,12 +146,30 @@ namespace KursovaRabota.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllUnregistered(DisplayAllUsersViewModel? model)
         {
+            model.Subjects = await subjectService.GetAll();
+            var users = await userService.GetAllUnregistered();
+            model.Users = users;
+
+            if (model.SortByName == true)
+            {
+                model.Users.OrderBy(x => x.FirstName).ToList();
+            }
+            else
+            {
+                model.Users.OrderByDescending(x => x.FirstName).ToList();
+            }
+
             if (model.SelectedSubject != null)
             {
                 model.SelectedSubject = await subjectService.GetById(model.SelectedSubject.Id);
             }
 
-            model.Users = await userService.GetAllUnregistered();
+            model.Users = model.Users
+                .Where(users =>
+           (model.SelectedSubject == null || users.TeacherSubjects.Contains(model.SelectedSubject)) &&
+           (model.Name == null || (users.FirstName + "" + users.LastName).Contains(model.Name)) &&
+           (model.Class == null || users.Class.Contains(model.Class))
+           ).ToList();
 
             return View(model);
         }
@@ -163,38 +180,59 @@ namespace KursovaRabota.Controllers
         {
             model.Subjects = await subjectService.GetAll();
             var users = await userService.GetAll();
+            model.Users = users;
 
-            if (model.SelectedSubject != null)
+            if (model.SortByName == true)
             {
-                model.Users = new List<ViewModels.DisplayUserViewModel>();
-                model.SelectedSubject = await subjectService.GetById(model.SelectedSubject.Id);
-                foreach (var item in users)
-                {
-                    if (item.TeacherSubjects!=null && item.TeacherSubjects.Any(subject => subject.SubjectName == model.SelectedSubject.SubjectName))
-                    {
-                        model.Users.Add(item);
-                    }
-                }
+               model.Users =  model.Users.OrderBy(x => x.FirstName).ToList();
             }
             else
             {
-                model.Users = users;
+                model.Users = model.Users.OrderByDescending(x => x.FirstName).ToList();
             }
+            if (model.SelectedSubject != null)
+            {
+                model.SelectedSubject = await subjectService.GetById(model.SelectedSubject.Id);
+            }
+            foreach (var item in model.Users)
+            {
+                if (item.Class == null)
+                {
+                    item.Class = "";
+                }
+            }
+            model.Users = model.Users
+                .Where(users =>
+           (model.SelectedSubject == null || users.TeacherSubjects.Any(subject => subject.SubjectName == model.SelectedSubject.SubjectName)) &&
+           (model.Name == null || (users.FirstName + "" + users.LastName).Contains(model.Name)) &&
+           (model.Class == null || users.Class.Contains(model.Class))
+           ).ToList();
 
-            //other checks
-            
+
 
             return View(model);
+
         }
+
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateUser(Guid Id)
         {
-            var user = await userManager.FindByIdAsync(Id.ToString());
+            var user = await context.Users.Select(x=> new ApplicationUser 
+            {
+                Id = x.Id,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Class = x.Class,
+                UserName = x.UserName,
+                Email = x.Email,
+                PhoneNumber = x.PhoneNumber,
+                TeacherSubjects = x.TeacherSubjects,
+                
+            }).FirstOrDefaultAsync(x=> x.Id == Id.ToString());
 
             var roles = await userManager.GetRolesAsync(user);
-
 
             var forView = new UpdateUserViewModel
             {
@@ -205,11 +243,14 @@ namespace KursovaRabota.Controllers
                 LastName = user.LastName,
                 Email = user.Email,
                 DesiredRole = roles[0].ToString(),
-                TeacherSubjects = await context.Subjects.ToListAsync()
+                Class = user.Class,
+                TeacherSubjects = user.TeacherSubjects,
+                Subjects =await subjectService.GetAll()
             };
-            if (user.TeacherSubjects != null)
+            if (forView.TeacherSubjects != null)
             {
-                foreach (var subject in user.TeacherSubjects)
+                forView.SelectedSubjectIds = new List<Guid>();
+                foreach (var subject in forView.TeacherSubjects)
                 {
                     forView.SelectedSubjectIds.Add(subject.Id);
                 }

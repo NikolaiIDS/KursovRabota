@@ -4,6 +4,7 @@ using KursovaRabota.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KursovaRabota.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240331142352_dateOfCnduct")]
+    partial class dateOfCnduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,7 +142,7 @@ namespace KursovaRabota.Migrations
                             Id = "255a2f5d-901c-4966-b091-b5ed871a3c4d",
                             AccessFailedCount = 0,
                             Approved = true,
-                            ConcurrencyStamp = "b87caf61-6054-4f45-b226-5401e0fd528d",
+                            ConcurrencyStamp = "d097b85f-faea-4ea1-8e6b-5b5b23b60cfc",
                             Email = "admin@email.com",
                             EmailConfirmed = false,
                             FirstName = "admin",
@@ -147,9 +150,9 @@ namespace KursovaRabota.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "admin@email.com",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAIAAYagAAAAECHRBCaYQ6YfjaPZcswG2y7xH6aTrXIYMWui266alHWGb27vZ4h3u98WIFOql0iqcg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDqRQTmLlpORSNgTWXus3ItkI+B1QF++D7jQmaFz0i38p12imC+aA04nHpXW8xboYg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c3b65539-0308-4966-b03e-89ef3ad45d08",
+                            SecurityStamp = "435abd3a-0f2b-4878-8dbe-8f2e5bbb7020",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         },
@@ -158,7 +161,7 @@ namespace KursovaRabota.Migrations
                             Id = "a7594af2-ae37-4217-a1d8-891f590692b3",
                             AccessFailedCount = 0,
                             Approved = true,
-                            ConcurrencyStamp = "b1da4efe-4583-4d28-9ce4-203ae5fb8907",
+                            ConcurrencyStamp = "65b388f7-603b-41d6-873e-e6a2e5e6a131",
                             Email = "teacher@email.com",
                             EmailConfirmed = false,
                             FirstName = "teacher",
@@ -166,9 +169,9 @@ namespace KursovaRabota.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "teacher@email.com",
                             NormalizedUserName = "teacher",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAEwJWudLBgSzdjGnhbtabAy/xQDDjFjXxjRGit15WF9p2wccVykiqOwJ6ApaEcFpQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHG3KhhEB5bbVdcFZALIT7KVwf8nNFFniuZ5rW2pA+H8v6vntuXWJta7/wdMOv8jTQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "d1ab8656-1d2e-40d7-82fc-688ff4554ed3",
+                            SecurityStamp = "8e734066-7c7c-4e9f-9753-6a0fa31d06b9",
                             TwoFactorEnabled = false,
                             UserName = "teacher"
                         },
@@ -177,7 +180,7 @@ namespace KursovaRabota.Migrations
                             Id = "0778238c-1e1b-4e5d-9ea6-1a01e9264086",
                             AccessFailedCount = 0,
                             Approved = true,
-                            ConcurrencyStamp = "ce2e68c8-b7de-4c21-b34e-5068d2e77027",
+                            ConcurrencyStamp = "c5965000-f49a-4a74-aedf-3c3d99f53f9a",
                             Email = "student@email.com",
                             EmailConfirmed = false,
                             FirstName = "student",
@@ -185,9 +188,9 @@ namespace KursovaRabota.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "student@email.com",
                             NormalizedUserName = "student",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDSuEOKXog6z4lYWK9vk6U2Z1FXGCP9r0u5HkwJhis5XSIjm/njx3VrT5aI+dSxgMA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPGLJAE0SIJOhNre0QAZ/6oKoq010Ubk3+h9Ls/Og8mAG425k8UJqspj3gXAIxBDRg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a50f515a-fcc9-42de-ae6f-b6bed7be553f",
+                            SecurityStamp = "d3291787-b404-441b-8e08-7fe13de5d19b",
                             TwoFactorEnabled = false,
                             UserName = "student"
                         });

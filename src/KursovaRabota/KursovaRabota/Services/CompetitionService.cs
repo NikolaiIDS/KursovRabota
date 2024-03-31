@@ -1,7 +1,10 @@
-﻿using KursovaRabota.Data;
+﻿using System.Security.Cryptography.X509Certificates;
+
+using KursovaRabota.Data;
 using KursovaRabota.Data.Models;
 using KursovaRabota.Services.Contracts;
 using KursovaRabota.ViewModels.CompetitionVMs;
+using KursovaRabota.ViewModels.SubjectVMs;
 using KursovaRabota.ViewModels.UserVMs;
 
 using Microsoft.EntityFrameworkCore;
@@ -72,7 +75,7 @@ namespace KursovaRabota.Services
                     Id = x.Id,
                     Name = x.Name,
                     Description = x.Description,
-                    Subject = x.Subject,
+                    Subject = new SubjectViewModel { Id = x.Subject.Id, SubjectName = x.Subject.SubjectName },
                     CompetitionType = x.CompetitionType,
                     IsActive = x.IsActive,
                     IsFull = x.IsFull,
@@ -122,7 +125,7 @@ namespace KursovaRabota.Services
                     Id = x.Id,
                     Name = x.Name,
                     Description = x.Description,
-                    Subject = x.Subject,
+                    Subject = new SubjectViewModel { Id = x.Subject.Id, SubjectName = x.Subject.SubjectName },
                     CompetitionType = x.CompetitionType,
                     IsActive = x.IsActive,
                     IsFull = x.IsFull,
@@ -139,9 +142,21 @@ namespace KursovaRabota.Services
         public async Task Deactivate(Guid id)
         {
             var competition = await context.Competitions.FindAsync(id);
-            if (competition == null)
+            if (competition != null)
             {
                 competition.IsActive = false;
+                await context.SaveChangesAsync();
+                return;
+            }
+            return;
+        }
+
+        public async Task Reactivate(Guid id)
+        {
+            var competition = await context.Competitions.FindAsync(id);
+            if (competition != null)
+            {
+                competition.IsActive = true;
                 await context.SaveChangesAsync();
                 return;
             }
@@ -168,7 +183,7 @@ namespace KursovaRabota.Services
                     Name = x.Name,
                     RegistrationDeadline = x.RegistrationDeadline,
                     Users = x.Users,
-                    Subject = x.Subject,
+                    Subject = new SubjectViewModel { Id = x.Subject.Id, SubjectName = x.Subject.SubjectName },
                     CurrentParticipants = x.CurrentParticipants,
                 })
                 .ToListAsync();
@@ -195,7 +210,7 @@ namespace KursovaRabota.Services
                     Name = x.Name,
                     RegistrationDeadline = x.RegistrationDeadline,
                     Users = x.Users,
-                    Subject = x.Subject,
+                    Subject = new SubjectViewModel { Id = x.Subject.Id, SubjectName = x.Subject.SubjectName },
                     CurrentParticipants = x.CurrentParticipants,
                 })
                 .ToListAsync();
@@ -222,7 +237,7 @@ namespace KursovaRabota.Services
                     Name = x.Name,
                     RegistrationDeadline = x.RegistrationDeadline,
                     Users = x.Users,
-                    Subject = x.Subject,
+                    Subject = new SubjectViewModel { Id = x.Subject.Id, SubjectName = x.Subject.SubjectName },
                     CurrentParticipants = x.CurrentParticipants,
                 })
                 .ToListAsync();
@@ -248,7 +263,7 @@ namespace KursovaRabota.Services
                     Name = x.Name,
                     RegistrationDeadline = x.RegistrationDeadline,
                     Users = x.Users,
-                    Subject = x.Subject,
+                    Subject = new SubjectViewModel { Id = x.Subject.Id, SubjectName = x.Subject.SubjectName },
                     CurrentParticipants = x.CurrentParticipants,
                 })
                 .ToListAsync();

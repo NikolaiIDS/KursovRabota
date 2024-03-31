@@ -45,6 +45,26 @@ namespace KursovaRabota.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> Update(Guid Id)
+        {
+            
+            return View(await subjectService.GetById(Id));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdatePOST(SubjectViewModel model)
+        {
+            if (model.Id != Guid.Empty)
+            {
+                await subjectService.Update(model);
+                TempData["success"] = "Предметът бе добавен успешно";
+                return RedirectToAction("Add");
+            }
+            TempData["error"] = "Грешка в добавянето на предмета";
+            return RedirectToAction("Add");
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Delete (string id)
         {
             if (id != null) 

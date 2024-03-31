@@ -1,4 +1,6 @@
 ﻿using KursovaRabota.Data.Models;
+using KursovaRabota.ViewModels.SubjectVMs;
+
 using System.ComponentModel.DataAnnotations;
 
 namespace KursovaRabota.ViewModels.UserVMs
@@ -39,6 +41,6 @@ namespace KursovaRabota.ViewModels.UserVMs
 
         public List<Guid>? SelectedSubjectIds { get; set; }
 
-
+        public List<SubjectViewModel>? Subjects { get; set; } = null!;
     }
 }

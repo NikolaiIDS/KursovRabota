@@ -54,6 +54,7 @@ namespace KursovaRabota.Services
                     FirstName = x.FirstName,
                     LastName = x.LastName,
                     Email = x.Email,
+                    Class = x.Class,
                     PhoneNumber = x.PhoneNumber,
                     Approved = x.Approved,
                     TeacherSubjects = x.TeacherSubjects.Select(y => new ViewModels.SubjectVMs.SubjectViewModel { Id = y.Id, SubjectName = y.SubjectName }).ToList(),
@@ -80,6 +81,7 @@ namespace KursovaRabota.Services
                     Email = x.Email,
                     PhoneNumber = x.PhoneNumber,
                     Approved = x.Approved,
+                    Class = x.Class,
                     TeacherSubjects = x.TeacherSubjects.Select(y => new ViewModels.SubjectVMs.SubjectViewModel { Id = y.Id, SubjectName = y.SubjectName }).ToList(),
                     DesiredRole = context.UserRoles
                .Where(ur => ur.UserId == x.Id)
@@ -125,8 +127,12 @@ namespace KursovaRabota.Services
                 }
             }
 
+            var user = await context.Users
+          .Include(u => u.TeacherSubjects)
+          .FirstOrDefaultAsync(u => u.Id == model.Id.ToString());
 
-            var user = await userManager.FindByEmailAsync(model.Email);
+
+            // Update user properties
             user.UserName = model.UserName;
             user.NormalizedUserName = model.UserName.ToUpper();
             user.PhoneNumber = model.PhoneNumber;
@@ -134,11 +140,17 @@ namespace KursovaRabota.Services
             user.NormalizedEmail = model.Email.ToUpper();
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
-            user.TeacherSubjects = model.TeacherSubjects;
+            user.Class = model.Class;
 
-            context.Update(user);
+            user.TeacherSubjects.Clear();
+
+            // Add existing TeacherSubjects
+            foreach (var subject in model.TeacherSubjects)
+            {
+                user.TeacherSubjects.Add(subject);
+            }
+
             await context.SaveChangesAsync();
-
         }
 
         public async Task Subscribe(CompetitionGetViewModel competition, ApplicationUser user)
@@ -158,7 +170,7 @@ namespace KursovaRabota.Services
                     MaxParticipants = competition.MaxParticipants,
                     RegistrationDeadline = competition.RegistrationDeadline,
                     Users = competition.Users,
-                    Subject = competition.Subject,
+                    Subject = new Subject { Id = competition.Subject.Id, SubjectName = competition.Subject.SubjectName},
                     CurrentParticipants = competition.CurrentParticipants
                 }).FirstOrDefaultAsync();
 

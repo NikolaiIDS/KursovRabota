@@ -15,6 +15,9 @@ namespace KursovaRabota.Services.Contracts
         Task Update(CompetitionUpdateViewModel model);
 
         Task Deactivate(Guid id);
+
+        Task Reactivate(Guid id);
+
         Task Delete(Guid id);
 
         Task<GetCompUsersViewModel> GetAllUsers(Guid id);

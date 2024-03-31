@@ -6,6 +6,7 @@ namespace KursovaRabota.Services.Contracts
     {
         Task Add(SubjectViewModel model);
         Task Delete(Guid id);
+        Task Update(SubjectViewModel model);
         Task<List<SubjectViewModel>> GetAll();
         Task<SubjectViewModel> GetById(Guid id);
     }

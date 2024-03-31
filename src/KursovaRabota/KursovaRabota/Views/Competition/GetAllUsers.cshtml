@@ -6,7 +6,7 @@
 
 @if (Model.Students.Any())
 {
-
+    <p>Брой записани ученици : @Model.Students.Count()</p>
     <table class="table">
         <thead>
             <tr>
@@ -31,31 +31,35 @@
         </tbody>
     </table>
     <form asp-action="GetAllUsers" asp-controller="Competition" method="get" id="paginationForm">
-
-            <input type="hidden" name="pageNumber" id="pageNumberInput" value="@(Model.CurrentPage)" />
-            <input type="hidden" name="pageSize" value="@(Model.PageSize)" />
-            <div class="d-flex gap-2 justify-content-center">
-                <div class="pagination d-flex gap-2">
-                    <div class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")" id="paginationPrevious" style="@(Model.CurrentPage == 1 ? "display:none;" : "")">
-                        <a class="page-link border-0" href="javascript:void(0);" onclick="changePage(@(Model.CurrentPage - 1))">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20" height="20"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" /></svg>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="pagination d-flex gap-2" id="paginationList">
-                    <!-- Pagination numbers will be generated dynamically here -->
-                </div>
-
-                <div class="pagination d-flex gap-2">
-                    <div class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")" style="@(Model.CurrentPage == Model.TotalPages ? "display:none;" : "")">
-                        <a class="page-link border-0" href="javascript:void(0);" onclick="changePage(@(Model.CurrentPage + 1))">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20" height="20"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z" /></svg>
-                        </a>
-                    </div>
+        <input type="hidden" name="pageNumber" id="pageNumberInput" value="@(Model.CurrentPage)" />
+        <label for="PageSize">Брой елементи на страница:</label>
+        <select asp-for="@Model.PageSize" id="paginationDropdown" name="pageSize" class="form-control" onchange="pageSize(this.value)">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+        </select>
+        <div class="d-flex gap-2 justify-content-center">
+            <div class="pagination d-flex gap-2">
+                <div class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")" id="paginationPrevious" style="@(Model.CurrentPage == 1 ? "display:none;" : "")">
+                    <a class="page-link border-0" href="javascript:void(0);" onclick="changePage(@(Model.CurrentPage - 1))">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20" height="20"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" /></svg>
+                    </a>
                 </div>
             </div>
-        </form>
+
+            <div class="pagination d-flex gap-2" id="paginationList">
+                <!-- Pagination numbers will be generated dynamically here -->
+            </div>
+
+            <div class="pagination d-flex gap-2">
+                <div class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")" style="@(Model.CurrentPage == Model.TotalPages ? "display:none;" : "")">
+                    <a class="page-link border-0" href="javascript:void(0);" onclick="changePage(@(Model.CurrentPage + 1))">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20" height="20"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z" /></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
 }
 else
 {

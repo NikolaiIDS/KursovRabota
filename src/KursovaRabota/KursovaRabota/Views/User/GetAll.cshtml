@@ -4,47 +4,88 @@
 
 <h2>Потребители</h2>
 
-<form id="filterForm" method="get" asp-action="GetAll" asp-controller="User">
-    <div class="form-group">
-        <label for="Subject">Предмет:</label>
-        <select id="subjectDropdown" asp-for="SelectedSubject.Id" asp-items="@(new SelectList(Model.Subjects, "Id", "SubjectName"))" class="form-control">
-            <option value="">Избери предмет</option>
-        </select>
-        <span asp-validation-for="SelectedSubject.Id" class="text-danger"></span>
-    </div>
-</form>
-
-@if (Model.Users != null)
-{
-    @foreach (var user in Model.Users)
-    {
-        <div class="card" style="width: 18rem; margin-bottom: 20px;">
-            <div class="card-body">
-                <h5 class="card-title">@user.FirstName @user.LastName</h5>
-                <p class="card-text">
-                    Потребителско име: @user.UserName<br /> Електронна поща: @user.Email<br />Телефон: @user.PhoneNumber
-                </p>
-                @if (!string.IsNullOrEmpty(user.DesiredRole))
-                {
-                    <p class="card-text">Желана роля: @user.DesiredRole</p>
-                }
-                <form method="get">
-                    <button asp-action="UpdateUser" asp-controller="User" type="submit" asp-route-Id="@user.Id" class="btn btn-primary">Промени</button>
-                </form>
-                <form method="get">
-                    <button asp-action="Delete" asp-controller="User" type="submit" class="btn btn-primary" asp-route-Id="@user.Id">Изтрий</button>
-                </form>
-            </div>
+<div>
+    <form style="display:flex; flex-direction:row" method="get" asp-action="GetAll" asp-controller="User">
+        <div style="display:flex" class="form-group">
+            <label asp-for="@Model.Name">Филтрирай по Име:</label>
+            <input asp-for="@Model.Name" class="form-control">
+            <span asp-validation-for="@Model.Name" class="text-danger"></span>
         </div>
+
+        <div style="display:flex" class="form-group">
+            <label asp-for="@Model.Class">Филтрирай по Клас:</label>
+            <input asp-for="@Model.Class" class="form-control">
+            <span asp-validation-for="@Model.Class" class="text-danger"></span>
+        </div>
+
+        <div style="display:flex" class="form-group">
+            <label for="Subject">Предмет:</label>
+            <select id="subjectDropdown" asp-for="SelectedSubject.Id" asp-items="@(new SelectList(Model.Subjects, "Id", "SubjectName"))" class="form-control">
+                <option value="">Избери предмет</option>
+            </select>
+        </div>
+
+        <div style="display:flex" class="form-group">
+            <label for="Subject">Сортиране по дата:</label>
+            <select id="subjectDropdown" asp-for="SortByName" class="form-control">
+                <option value=true>Сортиране в низходящ ред</option>
+                <option value=true>Сортиране във възходящ ред</option>
+            </select>
+            <span asp-validation-for="SortByName" class="text-danger"></span>
+        </div>
+        <button style="display:flex" class="btn btn-primary" type="submit">Филтрирай</button>
+    </form>
+
+</div>
+<div style="display: flex; flex-wrap: wrap;">
+    @if (Model.Users != null)
+    {
+        @foreach (var user in Model.Users)
+        {
+            <div class="card" style="width: 18rem; margin-bottom: 20px; 
+  background-color: #f0f0f0;
+  margin: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;">
+                <div class="card-body">
+                    <h5 class="card-title">@user.FirstName @user.LastName</h5>
+                    <p class="card-text">
+                        Потребителско име: @user.UserName<br /> Електронна поща: @user.Email<br />Телефон: @user.PhoneNumber
+                    </p>
+                    @if (!string.IsNullOrEmpty(user.DesiredRole))
+                    {
+                        <p class="card-text">Роля: @user.DesiredRole</p>
+                    }
+                    <form method="get">
+                        <button asp-action="UpdateUser" asp-controller="User" type="submit" asp-route-Id="@user.Id" class="btn btn-primary">Промени</button>
+                    </form>
+                    <button onclick="confirmDelete('@user.Id')" class="btn btn-danger">Изтриване</button>
+                </div>
+            </div>
+        }
     }
-}
-else
-{
-    <p>Няма потребтели</p>
-}
+    else
+    {
+        <p>Няма потребтели</p>
+    }
+</div>
+
 
 <script>
     document.getElementById('subjectDropdown').addEventListener('change', function () {
         document.getElementById('filterForm').submit();
     });
+</script>
+
+<script>
+    function confirmDelete(id) {
+        var result = confirm("Сигурни ли сте, че искате да изтриете състезанието?");
+
+        if (result) {
+            window.location.href = '/User/Delete?id=' + id;
+        }
+    }
 </script>

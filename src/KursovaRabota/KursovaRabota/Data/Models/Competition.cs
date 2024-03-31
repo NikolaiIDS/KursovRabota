@@ -19,7 +19,9 @@ namespace KursovaRabota.Data.Models
 
         public DateTime RegistrationDeadline { get; set; }
 
-        
+        public DateTime DateOfConduct { get; set; }
+
+
         [StringLength(100, MinimumLength = 3)]
         public string Location { get; set; } = null!;
 

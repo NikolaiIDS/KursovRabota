@@ -28,27 +28,47 @@ namespace KursovaRabota.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, Teacher")]
+        [Authorize(Roles = "Admin, Teacher, Student")]
 
-        public async Task<IActionResult> GetAll(int? pageSize, int? pageNumber)
+        public async Task<IActionResult> GetAll(CompetitionGetAllViewModel? model, int? pageSize, int? pageNumber)
         {
             var list = await _competitionService.GetAll();
-            var model = new CompetitionGetAllViewModel();
+
+            model.Subjects = await _subjectService.GetAll();
+
+            if (model.Subject != null)
+            {
+                model.Subject = await _subjectService.GetById(model.Subject.Id);
+            }
 
             model.Competitions = list;
-            pageSize = pageSize ?? 1; // Default page size is 6
-            pageNumber = pageNumber ?? 1; // Default page number is 1
+            pageSize = pageSize ?? 5;
+            pageNumber = pageNumber ?? 1;
             model.PageSize = pageSize.Value;
             model.CurrentPage = pageNumber.Value;
             model.TotalPages = (int)Math.Ceiling((double)model.Competitions.Count() / pageSize.Value);
 
-            model.Competitions = model.Competitions
-                .Skip((pageNumber.Value - 1) * pageSize.Value)
-                .Take(pageSize.Value)
-                .ToList();
+            if (model.SortByDate == true)
+            {
+                model.Competitions=model.Competitions.OrderBy(x => x.DateOfConduct).ToList();
+            }
+            else
+            {
+                model.Competitions = model.Competitions.OrderByDescending(x => x.DateOfConduct).ToList();
+            }
 
-            // Pass the paginated cars to the view
-            
+            model.Competitions = model.Competitions
+            .Where(competition =>
+                (model.PlaceOfConduct == null || competition.Location.Contains(model.PlaceOfConduct)) &&
+                (model.DateOfConduct == DateTime.MinValue || model.DateOfConduct == competition.DateOfConduct) &&
+                (model.Subject == null || model.Subject.Id == competition.Subject.Id))
+            .ToList();
+
+            model.Competitions = model.Competitions
+                    .Skip((pageNumber.Value - 1) * pageSize.Value)
+                    .Take(pageSize.Value)
+                    .ToList();
+
             return View(model);
         }
 
@@ -99,7 +119,7 @@ namespace KursovaRabota.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> Deactivate(Guid id)
         {
             await _competitionService.Deactivate(id);
@@ -108,12 +128,21 @@ namespace KursovaRabota.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost]
+        [HttpGet]
+        public async Task<IActionResult> Reactivate(Guid id)
+        {
+            await _competitionService.Reactivate(id);
+            TempData["success"] = "Състезанието бе деактививано възстановено";
+            return RedirectToAction("GetAll");
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
-            await _competitionService.Deactivate(id);
-            TempData["warning"] = "Състезанието бе деактививано успешно";
-            return RedirectToAction("GetAll");
+            await _competitionService.Delete(id);
+            TempData["warning"] = "Състезанието бе изтрито успешно";
+            return RedirectToAction("GetAllInactive");
         }
 
         [HttpGet]
@@ -147,24 +176,48 @@ namespace KursovaRabota.Controllers
         [HttpGet]
         [Authorize(Roles = "Student")]
 
-        public async Task<IActionResult> GetAllSubscriptions(CompetitionAddViewModel fromView, int? pageSize = 10, int? pageNumber = 1)
+        public async Task<IActionResult> GetAllSubscriptions(CompetitionGetAllViewModel? model, int? pageSize = 10, int? pageNumber = 1)
         {
             var user = await _signInManager.UserManager.GetUserAsync(User);
             if (user != null)
             {
 
                 var list = await _competitionService.GetAllSubscriptions(user.Id);
-                var model = new CompetitionGetAllViewModel();
+
+                model.Subjects = await _subjectService.GetAll();
+
+                if (model.Subject != null)
+                {
+                    model.Subject = await _subjectService.GetById(model.Subject.Id);
+                }
 
                 model.Competitions = list;
+                pageSize = pageSize ?? 5;
+                pageNumber = pageNumber ?? 1;
                 model.PageSize = pageSize.Value;
                 model.CurrentPage = pageNumber.Value;
-                model.TotalPages = (int)Math.Ceiling((double)list.Count / pageSize.Value);
+                model.TotalPages = (int)Math.Ceiling((double)model.Competitions.Count() / pageSize.Value);
 
-                model.Competitions = list
-                    .Skip((pageNumber.Value - 1) * pageSize.Value)
-                    .Take(pageSize.Value)
-                    .ToList();
+                if (model.SortByDate == true)
+                {
+                    model.Competitions = model.Competitions.OrderBy(x => x.DateOfConduct).ToList();
+                }
+                else
+                {
+                    model.Competitions = model.Competitions.OrderByDescending(x => x.DateOfConduct).ToList();
+                }
+
+                model.Competitions = model.Competitions
+                .Where(competition =>
+                    (model.PlaceOfConduct == null || competition.Location.Contains(model.PlaceOfConduct)) &&
+                    (model.DateOfConduct == DateTime.MinValue || model.DateOfConduct == competition.DateOfConduct) &&
+                    (model.Subject == null || model.Subject.Id == competition.Subject.Id))
+                .ToList();
+
+                model.Competitions = model.Competitions
+                        .Skip((pageNumber.Value - 1) * pageSize.Value)
+                        .Take(pageSize.Value)
+                        .ToList();
 
                 return View(model);
             }
@@ -176,23 +229,47 @@ namespace KursovaRabota.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Student")]
-        public async Task<IActionResult> GetAllForUser(int? pageSize = 10, int? pageNumber = 1)
+        public async Task<IActionResult> GetAllForUser(CompetitionGetAllViewModel? model, int? pageSize = 10, int? pageNumber = 1)
         {
             var user = await _signInManager.UserManager.GetUserAsync(User);
             if (user != null)
             {
                 var list = await _competitionService.GetAllExceptUsers(user.Id);
-                var model = new CompetitionGetAllViewModel();
+
+                model.Subjects = await _subjectService.GetAll();
+
+                if (model.Subject != null)
+                {
+                    model.Subject = await _subjectService.GetById(model.Subject.Id);
+                }
 
                 model.Competitions = list;
+                pageSize = pageSize ?? 5;
+                pageNumber = pageNumber ?? 1;
                 model.PageSize = pageSize.Value;
                 model.CurrentPage = pageNumber.Value;
-                model.TotalPages = (int)Math.Ceiling((double)list.Count / pageSize.Value);
+                model.TotalPages = (int)Math.Ceiling((double)model.Competitions.Count() / pageSize.Value);
 
-                model.Competitions = list
-                    .Skip((pageNumber.Value - 1) * pageSize.Value)
-                    .Take(pageSize.Value)
-                    .ToList();
+                if (model.SortByDate == true)
+                {
+                    model.Competitions = model.Competitions.OrderBy(x => x.DateOfConduct).ToList();
+                }
+                else
+                {
+                    model.Competitions = model.Competitions.OrderByDescending(x => x.DateOfConduct).ToList();
+                }
+
+                model.Competitions = model.Competitions
+                .Where(competition =>
+                    (model.PlaceOfConduct == null || competition.Location.Contains(model.PlaceOfConduct)) &&
+                    (model.DateOfConduct == DateTime.MinValue || model.DateOfConduct == competition.DateOfConduct) &&
+                    (model.Subject == null || model.Subject.Id == competition.Subject.Id))
+                .ToList();
+
+                model.Competitions = model.Competitions
+                        .Skip((pageNumber.Value - 1) * pageSize.Value)
+                        .Take(pageSize.Value)
+                        .ToList();
 
                 return View(model);
             }
@@ -205,7 +282,7 @@ namespace KursovaRabota.Controllers
         public async Task<IActionResult> GetAllUsers(Guid id, int? pageSize = 10, int? pageNumber = 1)
         {
             var users = await _competitionService.GetAllUsers(id);
-            
+
 
             users.PageSize = pageSize.Value;
             users.CurrentPage = pageNumber.Value;
@@ -221,40 +298,88 @@ namespace KursovaRabota.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin, Teacher")]
-        public async Task<IActionResult> GetAllInactive(int? pageSize = 10, int? pageNumber = 1)
+        public async Task<IActionResult> GetAllInactive(CompetitionGetAllViewModel? model, int? pageSize = 10, int? pageNumber = 1)
         {
             var list = await _competitionService.GetAllInactive();
-            var model = new CompetitionGetAllViewModel();
-            model.Competitions = list;
 
+            model.Subjects = await _subjectService.GetAll();
+
+            if (model.Subject != null)
+            {
+                model.Subject = await _subjectService.GetById(model.Subject.Id);
+            }
+
+            model.Competitions = list;
+            pageSize = pageSize ?? 5;
+            pageNumber = pageNumber ?? 1;
             model.PageSize = pageSize.Value;
             model.CurrentPage = pageNumber.Value;
-            model.TotalPages = (int)Math.Ceiling((double)list.Count / pageSize.Value);
+            model.TotalPages = (int)Math.Ceiling((double)model.Competitions.Count() / pageSize.Value);
+
+            if (model.SortByDate == true)
+            {
+                model.Competitions = model.Competitions.OrderBy(x => x.DateOfConduct).ToList();
+            }
+            else
+            {
+                model.Competitions = model.Competitions.OrderByDescending(x => x.DateOfConduct).ToList();
+            }
 
             model.Competitions = model.Competitions
-                .Skip((pageNumber.Value - 1) * pageSize.Value)
-                .Take(pageSize.Value)
-                .ToList();
+            .Where(competition =>
+                (model.PlaceOfConduct == null || competition.Location.Contains(model.PlaceOfConduct)) &&
+                (model.DateOfConduct == DateTime.MinValue || model.DateOfConduct == competition.DateOfConduct) &&
+                (model.Subject == null || model.Subject.Id == competition.Subject.Id))
+            .ToList();
+
+            model.Competitions = model.Competitions
+                    .Skip((pageNumber.Value - 1) * pageSize.Value)
+                    .Take(pageSize.Value)
+                    .ToList();
 
             return View(model);
         }
 
         [HttpGet]
         [Authorize(Roles = "Admin, Teacher")]
-        public async Task<IActionResult> GetAllFilled(int? pageSize = 10, int? pageNumber = 1)
+        public async Task<IActionResult> GetAllFilled(CompetitionGetAllViewModel? model, int? pageSize = 10, int? pageNumber = 1)
         {
-            var list = await _competitionService.GetAllInactive();
-            var model = new CompetitionGetAllViewModel();
-            model.Competitions = list;
+            var list = await _competitionService.GetAllFilled();
 
+            model.Subjects = await _subjectService.GetAll();
+
+            if (model.Subject != null)
+            {
+                model.Subject = await _subjectService.GetById(model.Subject.Id);
+            }
+
+            model.Competitions = list;
+            pageSize = pageSize ?? 5;
+            pageNumber = pageNumber ?? 1;
             model.PageSize = pageSize.Value;
             model.CurrentPage = pageNumber.Value;
-            model.TotalPages = (int)Math.Ceiling((double)list.Count / pageSize.Value);
+            model.TotalPages = (int)Math.Ceiling((double)model.Competitions.Count() / pageSize.Value);
+
+            if (model.SortByDate == true)
+            {
+                model.Competitions = model.Competitions.OrderBy(x => x.DateOfConduct).ToList();
+            }
+            else
+            {
+                model.Competitions = model.Competitions.OrderByDescending(x => x.DateOfConduct).ToList();
+            }
 
             model.Competitions = model.Competitions
-                .Skip((pageNumber.Value - 1) * pageSize.Value)
-                .Take(pageSize.Value)
-                .ToList();
+            .Where(competition =>
+                (model.PlaceOfConduct == null || competition.Location.Contains(model.PlaceOfConduct)) &&
+                (model.DateOfConduct == DateTime.MinValue || model.DateOfConduct == competition.DateOfConduct) &&
+                (model.Subject == null || model.Subject.Id == competition.Subject.Id))
+            .ToList();
+
+            model.Competitions = model.Competitions
+                    .Skip((pageNumber.Value - 1) * pageSize.Value)
+                    .Take(pageSize.Value)
+                    .ToList();
 
             return View(model);
         }

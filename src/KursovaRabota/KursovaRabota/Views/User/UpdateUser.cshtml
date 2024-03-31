@@ -54,7 +54,7 @@
         <div class="form-group" id="subjectsDiv">
             <label>Изберете предмети:</label>
             <br />
-            @foreach (var subject in Model.TeacherSubjects)
+            @foreach (var subject in Model.Subjects)
             {
                 <input type="checkbox" name="SelectedSubjectIds" value="@subject.Id" id="@("subject_" + subject.Id)" @(Model.SelectedSubjectIds != null && Model.SelectedSubjectIds.Contains(subject.Id) ? "checked" : "") />
                 <label for="@("subject_" + subject.Id)">@subject.SubjectName</label>

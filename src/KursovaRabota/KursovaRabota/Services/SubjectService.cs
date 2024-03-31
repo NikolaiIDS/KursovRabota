@@ -50,5 +50,12 @@ namespace KursovaRabota.Services
 
                 return model;
         }
+
+        public async Task Update(SubjectViewModel model)
+        {
+            var forDb = new Subject { Id  = model.Id, SubjectName = model.SubjectName};
+            context.Subjects.Update(forDb);
+            await context.SaveChangesAsync();
+        }
     }
 }

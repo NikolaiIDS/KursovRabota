@@ -6,71 +6,51 @@
 
 <h1>Запълнени Състезания</h1>
 
+<div>
+    <form style="display:flex; flex-direction:row" method="get" asp-action="GetAllFilled" asp-controller="Competition">
+        <div style="display:flex" class="form-group">
+            <label asp-for="@Model.PlaceOfConduct">Място на провеждане:</label>
+            <input asp-for="@Model.PlaceOfConduct" class="form-control">
+            <span asp-validation-for="@Model.PlaceOfConduct" class="text-danger"></span>
+        </div>
+
+        <div style="display:flex" class="form-group">
+            <label asp-for="DateOfConduct">Дата на провеждане:</label>
+            <input asp-for="DateOfConduct" class="form-control" type="date" />
+            <span asp-validation-for="DateOfConduct" class="text-danger"></span>
+        </div>
+
+        <div style="display:flex" class="form-group">
+            <label for="Subject">Предмет:</label>
+            <select id="subjectDropdown" asp-for="Subject.Id" asp-items="@(new SelectList(Model.Subjects, "Id", "SubjectName"))" class="form-control">
+                <option value="">Избери предмет</option>
+            </select>
+        </div>
+
+        <div style="display:flex" class="form-group">
+            <label for="Subject">Сортиране по дата:</label>
+            <select id="subjectDropdown" asp-for="SortByDate" class="form-control">
+                <option value=true>Сортиране в низходящ ред</option>
+                <option value=true>Сортиране във възходящ ред</option>
+            </select>
+            <span asp-validation-for="SortByDate" class="text-danger"></span>
+        </div>
+        <button style="display:flex" class="btn btn-primary" type="submit">Филтрирай</button>
+    </form>
+
+</div>
+
 @if (Model.Competitions.Any())
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Име</th>
-                <th>Описание</th>
-                <th>Предмет</th>
-                <th>Тип</th>
-                <th>Местоположение</th>
-                <th>Брой Записани Участници</th>
-                <th>Максимален Брой Участници</th>
-                <th>Крайна Дата за Регистрация</th>
-                <th>Действия</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var competition in Model.Competitions)
-            {
-                <tr>
-                    <td>@competition.Name</td>
-                    <td>@competition.Description</td>
-                    <td>@competition.Subject.SubjectName</td>
-                    <td>@competition.CompetitionType.Type</td>
-                    <td>@competition.Location</td>
-                    <td>@competition.CurrentParticipants</td>
-                    <td>@competition.MaxParticipants</td>
-                    <td>@competition.RegistrationDeadline.ToString("yyyy-MM-dd")</td>
-                    <td>
-                        @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
-                        {
-                            <form asp-controller="Competition" asp-action="GetAllUsers" method="get">
-                                <input type="hidden" name="id" value="@competition.Id" />
-                                <button type="submit" class="btn btn-primary">Преглед на Потребители</button>
-                            </form>
-                            <form asp-controller="Competition" asp-action="Update" method="get">
-                                <input type="hidden" name="id" value="@competition.Id" />
-                                <button type="submit" class="btn btn-secondary">Промяна на състезание</button>
-                            </form>
-                        }
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <form asp-controller="Competition" asp-action="Delete" method="post">
-                                <input type="hidden" name="id" value="@competition.Id" />
-                                <button type="submit" class="btn btn-danger">Деактивиране</button>
-                            </form>
-                        }
-                        @if (User.IsInRole("Student"))
-                        {
-                            <form asp-controller="User" asp-action="Subscribe" method="post">
-                                <input type="hidden" name="id" value="@competition.Id" />
-                                <button type="submit" class="btn btn-primary">Записване</button>
-                            </form>
-
-                        }
-                        
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <hr>
     <form asp-action="GetAllFilled" asp-controller="Competition" method="get" id="paginationForm">
-
         <input type="hidden" name="pageNumber" id="pageNumberInput" value="@(Model.CurrentPage)" />
-        <input type="hidden" name="pageSize" value="@(Model.PageSize)" />
+        <label for="PageSize">Брой елементи на страница:</label>
+        <select asp-for="@Model.PageSize" id="paginationDropdown" name="pageSize" class="form-control" onchange="pageSize(this.value)">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+        </select>
         <div class="d-flex gap-2 justify-content-center">
             <div class="pagination d-flex gap-2">
                 <div class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")" id="paginationPrevious" style="@(Model.CurrentPage == 1 ? "display:none;" : "")">
@@ -93,6 +73,54 @@
             </div>
         </div>
     </form>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Име</th>
+                <th>Описание</th>
+                <th>Предмет</th>
+                <th>Тип</th>
+                <th>Местоположение</th>
+                <th>Брой Записани Участници</th>
+                <th>Максимален Брой Участници</th>
+                <th>Крайна Дата за Регистрация</th>
+                <th>Дата на Провеждане</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody id="competitionTable">
+
+
+            @foreach (var competition in Model.Competitions)
+            {
+                <tr>
+                    <td>@competition.Name</td>
+                    <td>@competition.Description</td>
+                    <td>@competition.Subject.SubjectName</td>
+                    <td>@competition.CompetitionType.Type</td>
+                    <td>@competition.Location</td>
+                    <td>@competition.CurrentParticipants</td>
+                    <td>@competition.MaxParticipants</td>
+                    <td>@competition.RegistrationDeadline.ToString("yyyy-MM-dd")</td>
+                    <td>@competition.DateOfConduct.ToString("yyyy-MM-dd")</td>
+                    <td>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <form asp-controller="Competition" asp-action="Deactivate" method="post">
+                                <input type="hidden" name="id" value="@competition.Id" />
+                                <button type="submit" class="btn btn-danger">Деактивиране</button>
+                            </form>
+                        }
+
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
 }
 else
 {
@@ -101,6 +129,12 @@ else
 
 @section scripts
     {
+    <script>
+        document.getElementById('paginationDropdown').addEventListener('change', function () {
+            document.getElementById('paginationForm').submit();
+        });
+    </script>
+
     <script>
         function changePage(pageNumber) {
             document.getElementById("pageNumberInput").value = pageNumber;
@@ -138,13 +172,6 @@ else
                 listItem.appendChild(link);
                 paginationList.appendChild(listItem);
             }
-        }
-
-        // Call the function initially only if currentPage and totalPages are defined
-        if (@(ViewBag.CurrentPage) && @(ViewBag.TotalPages)) {
-            generatePaginationNumbers(@(ViewBag.CurrentPage), @(ViewBag.TotalPages));
-        } else {
-            console.error("ViewBag.CurrentPage or ViewBag.TotalPages is null or undefined.");
         }
     </script>
 }

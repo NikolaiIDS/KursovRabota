@@ -1,0 +1,23 @@
+﻿@using KursovaRabota.ViewModels.SubjectVMs
+@model SubjectViewModel
+
+
+
+<form id="updateForm" asp-action="UpdatePOST" asp-controller="Subject" method="post">
+    <div class="form-group">
+        <label asp-for="SubjectName"></label>
+        <input asp-for="SubjectName" class="form-control" />
+        <span asp-validation-for="SubjectName" class="text-danger"></span>
+    </div>
+    <input type="hidden" name="id" id="subjectId" value="@Model.Id" />
+    <button type="submit" class="btn btn-primary">Промяна</button>
+</form>
+
+<script>
+    document.getElementById('updateForm').addEventListener('submit', function (event) {
+        var result = confirm("Сигурни ли сте, че искате да промените предмета?");
+        if (!result) {
+            event.preventDefault(); // Cancel form submission if user cancels
+        }
+    });
+</script>

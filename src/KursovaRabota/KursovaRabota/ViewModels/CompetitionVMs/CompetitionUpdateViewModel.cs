@@ -19,6 +19,10 @@ namespace KursovaRabota.ViewModels.CompetitionVMs
         [DataType(DataType.Date)]
         public DateTime RegistrationDeadline { get; set; }
 
+        [Required(ErrorMessage = "Полето Срок за регистрация е задължително.")]
+        [DataType(DataType.Date)]
+        public DateTime DateOfConduct { get; set; }
+
         [Required(ErrorMessage = "Полето Местоположение е задължително.")]
         public string Location { get; set; } = null!;
 

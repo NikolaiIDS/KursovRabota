@@ -2,6 +2,7 @@
 using KursovaRabota.Data.Models;
 using KursovaRabota.Services.Contracts;
 using KursovaRabota.ViewModels.CompetitionTypeVMs;
+using KursovaRabota.ViewModels.SubjectVMs;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -41,6 +42,22 @@ namespace KursovaRabota.Services
             }).ToListAsync();
 
             return list;
+        }
+
+        public async Task<CompetitionTypeViewModel> GetById(Guid id)
+        {
+            var model = await context.CompetitionTypes
+                .Where(x => x.Id == id)
+                .Select(x => new CompetitionTypeViewModel { Id = x.Id, Type = x.Type }).FirstOrDefaultAsync();
+
+            return model;
+        }
+
+        public async Task Update(CompetitionTypeViewModel model)
+        {
+            var forDb = new CompetitionType { Id = model.Id, Type = model.Type };
+            context.CompetitionTypes.Update(forDb);
+            await context.SaveChangesAsync();
         }
     }
 }

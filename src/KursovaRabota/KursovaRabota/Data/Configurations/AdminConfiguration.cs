@@ -1,9 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-using KursovaRabota.Data.Models;
-
+﻿using KursovaRabota.Data.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -26,7 +22,6 @@ namespace KursovaRabota.Data.Configurations
             };
             var passwordHasher = new PasswordHasher<ApplicationUser>();
             admin.PasswordHash = passwordHasher.HashPassword(null, "Aa123456!");
-            
 
             builder.HasData(admin);
         }

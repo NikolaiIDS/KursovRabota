@@ -17,6 +17,10 @@ namespace KursovaRabota.Controllers
 
         public IActionResult Index()
         {
+            if (User.IsInRole("Student") || User.IsInRole("Admin") || User.IsInRole("Teacher"))
+            {
+                return RedirectToAction("GetAll", "Competition");
+            }
             return View();
         }
 

@@ -14,5 +14,6 @@ namespace KursovaRabota.ViewModels.UserVMs
         public bool SortByName { get; set; }
         public SubjectViewModel? SelectedSubject { get; set; }
         public string? Name { get; set; }
+        public string? DesiredRole { get; set; }
     }
 }

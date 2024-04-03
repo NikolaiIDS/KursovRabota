@@ -166,10 +166,11 @@ namespace KursovaRabota.Controllers
 
             model.Users = model.Users
                 .Where(users =>
-           (model.SelectedSubject == null || users.TeacherSubjects.Contains(model.SelectedSubject)) &&
-           (model.Name == null || (users.FirstName + "" + users.LastName).Contains(model.Name)) &&
-           (model.Class == null || users.Class.Contains(model.Class))
-           ).ToList();
+                (model.DesiredRole == null || users.DesiredRole == model.DesiredRole) &&
+                (model.SelectedSubject == null || users.TeacherSubjects.Contains(model.SelectedSubject)) &&
+                (model.Name == null || (users.FirstName + "" + users.LastName).Contains(model.Name)) &&
+                (model.Class == null || users.Class.Contains(model.Class))
+                ).ToList();
 
             return View(model);
         }
@@ -184,7 +185,7 @@ namespace KursovaRabota.Controllers
 
             if (model.SortByName == true)
             {
-               model.Users =  model.Users.OrderBy(x => x.FirstName).ToList();
+                model.Users = model.Users.OrderBy(x => x.FirstName).ToList();
             }
             else
             {
@@ -203,10 +204,11 @@ namespace KursovaRabota.Controllers
             }
             model.Users = model.Users
                 .Where(users =>
-           (model.SelectedSubject == null || users.TeacherSubjects.Any(subject => subject.SubjectName == model.SelectedSubject.SubjectName)) &&
-           (model.Name == null || (users.FirstName + "" + users.LastName).Contains(model.Name)) &&
-           (model.Class == null || users.Class.Contains(model.Class))
-           ).ToList();
+                (model.DesiredRole == null || users.DesiredRole == model.DesiredRole) &&
+                (model.SelectedSubject == null || users.TeacherSubjects.Contains(model.SelectedSubject)) &&
+                (model.Name == null || (users.FirstName + "" + users.LastName).Contains(model.Name)) &&
+                (model.Class == null || users.Class.Contains(model.Class))
+                ).ToList();
 
 
 
@@ -219,7 +221,7 @@ namespace KursovaRabota.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateUser(Guid Id)
         {
-            var user = await context.Users.Select(x=> new ApplicationUser 
+            var user = await context.Users.Select(x => new ApplicationUser
             {
                 Id = x.Id,
                 FirstName = x.FirstName,
@@ -229,8 +231,8 @@ namespace KursovaRabota.Controllers
                 Email = x.Email,
                 PhoneNumber = x.PhoneNumber,
                 TeacherSubjects = x.TeacherSubjects,
-                
-            }).FirstOrDefaultAsync(x=> x.Id == Id.ToString());
+
+            }).FirstOrDefaultAsync(x => x.Id == Id.ToString());
 
             var roles = await userManager.GetRolesAsync(user);
 
@@ -245,7 +247,7 @@ namespace KursovaRabota.Controllers
                 DesiredRole = roles[0].ToString(),
                 Class = user.Class,
                 TeacherSubjects = user.TeacherSubjects,
-                Subjects =await subjectService.GetAll()
+                Subjects = await subjectService.GetAll()
             };
             if (forView.TeacherSubjects != null)
             {

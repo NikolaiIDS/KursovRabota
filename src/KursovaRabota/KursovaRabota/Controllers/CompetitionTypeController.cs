@@ -37,7 +37,7 @@ namespace KursovaRabota.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(CompetitionTypeViewModel model)
         {
-            if (ModelState.IsValid)
+            if (model.Type!=null)
             {
                 await compTypeService.Add(model);
                 TempData["success"] = "Предметът бе добавен успешно";

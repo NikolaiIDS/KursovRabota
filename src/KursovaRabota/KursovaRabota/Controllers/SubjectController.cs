@@ -37,7 +37,7 @@ namespace KursovaRabota.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(SubjectViewModel model)
         {
-            if (ModelState.IsValid)
+            if (model.SubjectName != null)
             {
                 await subjectService.Add(model);
                 TempData["success"] = "Предметът бе добавен успешно";

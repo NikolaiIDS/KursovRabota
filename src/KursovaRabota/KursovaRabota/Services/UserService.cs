@@ -141,14 +141,17 @@ namespace KursovaRabota.Services
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
             user.Class = model.Class;
-
-            user.TeacherSubjects.Clear();
-
-            // Add existing TeacherSubjects
-            foreach (var subject in model.TeacherSubjects)
+            if (model.DesiredRole=="Teacher")
             {
-                user.TeacherSubjects.Add(subject);
+                user.TeacherSubjects.Clear();
+
+                // Add existing TeacherSubjects
+                foreach (var subject in model.TeacherSubjects)
+                {
+                    user.TeacherSubjects.Add(subject);
+                }
             }
+            
 
             await context.SaveChangesAsync();
         }

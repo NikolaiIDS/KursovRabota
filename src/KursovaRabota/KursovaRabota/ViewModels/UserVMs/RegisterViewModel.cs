@@ -29,8 +29,9 @@ namespace KursovaRabota.ViewModels.UserVMs
         public string Email { get; set; } = null!;
 
         [Required(ErrorMessage = "Телефонният номер е задължителен.")]
-        [Phone(ErrorMessage = "Невалиден телефонен номер.")]
+        [RegularExpression(@"^(?:\+359|0)\d{9}$", ErrorMessage = "Моля, въведете валиден български телефонен номер.")]
         public string PhoneNumber { get; set; } = null!;
+
 
         [Required(ErrorMessage = "Паролата е задължителна.")]
         [RegularExpression(@"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$", ErrorMessage = "Паролата трябва да съдържа поне 8 символа, включително поне една главна буква, една малка буква, една цифра и един специален символ.")]

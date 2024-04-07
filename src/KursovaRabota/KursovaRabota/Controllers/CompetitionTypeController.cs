@@ -1,4 +1,5 @@
-﻿using KursovaRabota.Services;
+﻿using KursovaRabota.Data.Models;
+using KursovaRabota.Services;
 using KursovaRabota.Services.Contracts;
 using KursovaRabota.ViewModels.CompetitionTypeVMs;
 using KursovaRabota.ViewModels.SubjectVMs;
@@ -23,11 +24,13 @@ namespace KursovaRabota.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Add()
+        public async Task<IActionResult> Add(CompetitionTypeViewModel? compTypes, int? diff)
         {
-            CompetitionTypeViewModel compTypes = new();
             compTypes.AllTypes = await compTypeService.GetAll();
-
+            compTypes.AllTypes = compTypes.AllTypes
+            .Where(type =>
+            (compTypes.Name == null || type.Type.Contains(compTypes.Name))
+             ).ToList();
             return View(compTypes);
         }
 

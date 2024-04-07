@@ -9,7 +9,6 @@ namespace KursovaRabota.Services.Contracts
         Task Add(CompetitionTypeViewModel model);
         Task Delete(Guid id);
         Task<List<CompetitionTypeViewModel>> GetAll();
-
         Task Update(CompetitionTypeViewModel model);
         Task<CompetitionTypeViewModel> GetById(Guid id);
     }

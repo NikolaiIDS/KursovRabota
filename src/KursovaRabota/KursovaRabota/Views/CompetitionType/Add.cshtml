@@ -12,14 +12,31 @@
 
 
 </form>
-<div>
+
+<form style="display:flex; flex-direction:row; justify-content: space-between; align-content: center" method="get" asp-action="Add" asp-controller="CompetitionType">
+  
+    <div style="display:flex; flex-direction: column" class="form-group">
+        <label asp-for="@Model.Name">Филтрирай по Име:</label>
+        <input asp-for="@Model.Name" class="form-control">
+        <span asp-validation-for="@Model.Name" class="text-danger"></span>
+    </div>
+
+    <button style="max-height: 50px" class="btn btn-primary" type="submit">Филтрирай</button>
+
+
+</form>
+<div style="display:flex;justify-content:space-evenly; flex-wrap:wrap">
     @if (Model.AllTypes != null)
     {
         @for (int i = 1; i <= Model.AllTypes.Count; i++)
         {
-            <label>@i: @Model.AllTypes[i - 1].Type</label>
-            <a class="btn btn-primary" asp-action="Update" asp-controller="CompetitionType" asp-route-id="@Model.AllTypes[i-1].Id">Промени</a>
-            <button onclick="confirmDelete('@Model.AllTypes[i-1].Id')" class="btn btn-danger">Изтриване</button>
+            <div class="card" style="display:flex ;flex-direction:column; justify-content:space-around; width: 350px; height: 100px ">
+                <label>@i: @Model.AllTypes[i-1].Type</label>
+                <div style="display:flex; flex-direction:row; justify-content:space-evenly">
+                    <a class="btn btn-primary" asp-action="Update" asp-controller="CompetitionType" asp-route-id="@Model.AllTypes[i-1].Id">Промени</a>
+                    <button onclick="confirmDelete('@Model.AllTypes[i-1].Id')" class="btn btn-danger">Изтриване</button>
+                </div>
+            </div>
         }
     }
 </div>

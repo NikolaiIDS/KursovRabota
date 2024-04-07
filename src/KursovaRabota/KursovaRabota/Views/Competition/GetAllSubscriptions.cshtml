@@ -4,35 +4,35 @@
 <h1>Всички Състезания за които сте записани</h1>
 
 <div>
-    <form style="display:flex; flex-direction:row" method="get" asp-action="GetAllSubscriptions" asp-controller="Competition">
-        <div style="display:flex" class="form-group">
+    <form style="display:flex; flex-direction:row; justify-content: space-between; align-content: center" method="get" asp-action="GetAllSubscriptions" asp-controller="Competition">
+        <div style="display:flex; flex-direction: column" class="form-group">
             <label asp-for="@Model.PlaceOfConduct">Място на провеждане:</label>
             <input asp-for="@Model.PlaceOfConduct" class="form-control">
             <span asp-validation-for="@Model.PlaceOfConduct" class="text-danger"></span>
         </div>
 
-        <div style="display:flex" class="form-group">
+        <div style="display:flex; flex-direction: column" class="form-group">
             <label asp-for="DateOfConduct">Дата на провеждане:</label>
             <input asp-for="DateOfConduct" class="form-control" type="date" />
             <span asp-validation-for="DateOfConduct" class="text-danger"></span>
         </div>
 
-        <div style="display:flex" class="form-group">
+        <div style="display:flex; flex-direction: column" class="form-group">
             <label for="Subject">Предмет:</label>
             <select id="subjectDropdown" asp-for="Subject.Id" asp-items="@(new SelectList(Model.Subjects, "Id", "SubjectName"))" class="form-control">
                 <option value="">Избери предмет</option>
             </select>
         </div>
 
-        <div style="display:flex" class="form-group">
+        <div style="display:flex; flex-direction: column" class="form-group">
             <label for="Subject">Сортиране по дата:</label>
             <select id="subjectDropdown" asp-for="SortByDate" class="form-control">
                 <option value=true>Сортиране в низходящ ред</option>
-                <option value=true>Сортиране във възходящ ред</option>
+                <option value=false>Сортиране във възходящ ред</option>
             </select>
             <span asp-validation-for="SortByDate" class="text-danger"></span>
         </div>
-        <button style="display:flex" class="btn btn-primary" type="submit">Филтрирай</button>
+        <button style="max-height: 50px" class="btn btn-primary" type="submit">Филтрирай</button>
     </form>
 
 </div>

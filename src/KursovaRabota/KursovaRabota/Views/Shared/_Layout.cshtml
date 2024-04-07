@@ -15,7 +15,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">KursovaRabota</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">УчебниСъстезания</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -66,8 +66,8 @@
 
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <div>
-                            <p>Hello @User.Identity.Name</p>
+                        <div style="display:flex; flex-direction:row">
+                            <p>Здравей @User.Identity.Name!</p>
                             <a asp-controller="User" asp-action="Logout" class="btn btn-danger">Излез</a>
                         </div>
                     }
@@ -89,7 +89,7 @@
         </main>
     </div>
 
-    <footer style="max-height: 100px; display: flex;" class="border-top footer text-muted">
+    <footer class="border-top footer text-muted">
         <div class="container" >
             &copy; 2024 - KursovaRabota - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>

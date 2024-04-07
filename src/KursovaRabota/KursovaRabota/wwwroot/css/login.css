@@ -1,8 +1,10 @@
-﻿#loginForm {
-    border: 1px solid #ccc;
+﻿form {
+    border: 2px solid #ccc;
+    border-radius: 5px;
     padding: 20px;
     margin: 0 auto;
     width: 300px;
+    background-color: white;
 }
 
 legend {

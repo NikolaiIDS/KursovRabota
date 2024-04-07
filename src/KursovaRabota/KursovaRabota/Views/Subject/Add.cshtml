@@ -3,23 +3,36 @@
 
 <form asp-action="Add" method="post">
     <div class="form-group">
-        <label asp-for="SubjectName"></label>
+        <label asp-for="SubjectName">Учебен Премет</label>
         <input asp-for="SubjectName" class="form-control" />
         <span asp-validation-for="SubjectName" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Добави предмет</button>
-
-
 </form>
-<div>
+
+<form style="display:flex; flex-direction:row; justify-content: space-between; align-content: center" method="get" asp-action="Add" asp-controller="Subject">
+
+    <div style="display:flex; flex-direction: column" class="form-group">
+        <label asp-for="@Model.Name">Филтрирай по Име:</label>
+        <input asp-for="@Model.Name" class="form-control">
+        <span asp-validation-for="@Model.Name" class="text-danger"></span>
+    </div>
+
+    <button style="max-height: 50px" class="btn btn-primary" type="submit">Филтрирай</button>
+</form>
+<div style="display:flex;justify-content:space-evenly; flex-wrap:wrap">
     @if (Model.Subjects != null)
     {
         @for (int i = 1; i <= Model.Subjects.Count; i++)
         {
-            <label>@i: @Model.Subjects[i-1].SubjectName</label>
-            <a class="btn btn-primary" asp-action="Update" asp-controller="Subject" asp-route-id="@Model.Subjects[i-1].Id">Промени</a>
-            <button onclick="confirmDelete('@Model.Subjects[i-1].Id')" class="btn btn-danger">Изтриване</button>
+            <div class="card" style="display:flex ;flex-direction:column; justify-content:space-around; width: 350px; height: 100px ">
+                <label>@i: @Model.Subjects[i-1].SubjectName</label>
+                <div style="display:flex; flex-direction:row; justify-content:space-evenly">
+                    <a class="btn btn-primary" asp-action="Update" asp-controller="Subject" asp-route-id="@Model.Subjects[i-1].Id">Промени</a>
+                    <button onclick="confirmDelete('@Model.Subjects[i-1].Id')" class="btn btn-danger">Изтриване</button>
+                </div>
+            </div>
         }
     }
 </div>

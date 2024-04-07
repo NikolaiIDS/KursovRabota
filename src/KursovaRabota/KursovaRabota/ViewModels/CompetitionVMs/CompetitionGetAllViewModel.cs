@@ -16,7 +16,7 @@ namespace KursovaRabota.ViewModels.CompetitionVMs
         public string? PlaceOfConduct { get; set; }
         public DateTime DateOfConduct { get; set; }
 
-        public bool? SortByDate { get; set; } = false;
+        public bool? SortByDate { get; set; }
 
         public List<CompetitionGetViewModel> Competitions { get; set; }
     }

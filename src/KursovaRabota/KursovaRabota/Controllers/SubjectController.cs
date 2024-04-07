@@ -23,10 +23,13 @@ namespace KursovaRabota.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Add()
+        public async Task<IActionResult> Add(SubjectViewModel? subjects, int? diff)
         {
-            SubjectViewModel subjects = new();
             subjects.Subjects = await subjectService.GetAll();
+
+            subjects.Subjects = subjects.Subjects
+           .Where(subject =>
+           (subjects.Name == null || subject.SubjectName.Contains( subjects.Name))).ToList();
 
             return View(subjects);
         }

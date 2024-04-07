@@ -5,27 +5,27 @@
 <h2>Нерегистрирани потребители</h2>
 
 <div>
-    <form style="display:flex; flex-direction:row" method="get" asp-action="GetAllUnregistered" asp-controller="User">
-        <div style="display:flex" class="form-group">
+    <form style="display:flex; flex-direction:row;justify-content: space-between; align-content: center " method="get" asp-action="GetAllUnregistered" asp-controller="User">
+        <div style="display:flex; flex-direction: column" class="form-group">
             <label asp-for="@Model.Name">Филтрирай по Име:</label>
             <input asp-for="@Model.Name" class="form-control">
             <span asp-validation-for="@Model.Name" class="text-danger"></span>
         </div>
 
-        <div style="display:flex" class="form-group">
+        <div style="display:flex; flex-direction: column" class="form-group">
             <label asp-for="@Model.Class">Филтрирай по Клас:</label>
             <input asp-for="@Model.Class" class="form-control">
             <span asp-validation-for="@Model.Class" class="text-danger"></span>
         </div>
 
-        <div style="display:flex" class="form-group">
+        <div style="display:flex; flex-direction: column" class="form-group">
             <label for="Subject">Предмет:</label>
             <select id="subjectDropdown" asp-for="SelectedSubject.Id" asp-items="@(new SelectList(Model.Subjects, "Id", "SubjectName"))" class="form-control">
                 <option value="">Избери предмет</option>
             </select>
         </div>
 
-        <div style="display:flex" class="form-group">
+        <div style="display:flex; flex-direction: column" class="form-group">
             <label for="Subject">Сортиране по дата:</label>
             <select id="subjectDropdown" asp-for="SortByName" class="form-control">
                 <option value=true>Сортиране в низходящ ред</option>
@@ -43,7 +43,8 @@
             <span asp-validation-for="@Model.DesiredRole" class="text-danger"></span>
         </div>
 
-        <button style="display:flex" class="btn btn-primary" type="submit">Филтрирай</button>
+        <button style="max-height: 50px" class="btn btn-primary" type="submit">Филтрирай</button>
+
     </form>
 
 </div>
@@ -64,6 +65,7 @@
                 <form method="get">
                     <button asp-action="ApproveUser" asp-controller="User" type="submit" class="btn btn-primary" asp-route-id="@user.Id">Одобри</button>
                 </form>
+                <button onclick="confirmDelete('@user.Id')" class="btn btn-danger">Изтриване</button>
             </div>
         </div>
     }
@@ -72,3 +74,12 @@ else
 {
     <p>Няма потребтели</p>
 }
+<script>
+    function confirmDelete(id) {
+        var result = confirm("Сигурни ли сте, че искате да изтриете потребителя?");
+
+        if (result) {
+            window.location.href = '/User/Delete?id=' + id;
+        }
+    }
+</script>

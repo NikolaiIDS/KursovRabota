@@ -142,6 +142,8 @@ namespace KursovaRabota.Controllers
             return RedirectToAction("GetAllUnregistered");
         }
 
+
+
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllUnregistered(DisplayAllUsersViewModel? model)
@@ -167,7 +169,7 @@ namespace KursovaRabota.Controllers
             model.Users = model.Users
                 .Where(users =>
                 (model.DesiredRole == null || users.DesiredRole == model.DesiredRole) &&
-                (model.SelectedSubject == null || users.TeacherSubjects.Contains(model.SelectedSubject)) &&
+                (model.SelectedSubject == null || users.TeacherSubjects != null && users.TeacherSubjects.Any(sub => sub.SubjectName == model.SelectedSubject.SubjectName)) && (model.Name == null || (users.FirstName + "" + users.LastName).Contains(model.Name)) &&
                 (model.Name == null || (users.FirstName + "" + users.LastName).Contains(model.Name)) &&
                 (model.Class == null || users.Class.Contains(model.Class))
                 ).ToList();
@@ -202,11 +204,12 @@ namespace KursovaRabota.Controllers
                     item.Class = "";
                 }
             }
+
             model.Users = model.Users
                 .Where(users =>
                 (model.DesiredRole == null || users.DesiredRole == model.DesiredRole) &&
-                (model.SelectedSubject == null || users.TeacherSubjects.Contains(model.SelectedSubject)) &&
-                (model.Name == null || (users.FirstName + "" + users.LastName).Contains(model.Name)) &&
+                (model.SelectedSubject == null || users.TeacherSubjects != null && users.TeacherSubjects.Any(sub => sub.SubjectName == model.SelectedSubject.SubjectName)) 
+                && (model.Name == null || (users.FirstName + "" + users.LastName).Contains(model.Name)) &&
                 (model.Class == null || users.Class.Contains(model.Class))
                 ).ToList();
 

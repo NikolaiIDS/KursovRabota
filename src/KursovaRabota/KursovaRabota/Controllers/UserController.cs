@@ -48,15 +48,15 @@ namespace KursovaRabota.Controllers
             switch (result)
             {
                 case LoginResult.WaitingApproval:
-                    TempData["warning"] = "Your account is waiting for confirmation from the administrator.";
+                    TempData["warning"] = "Вашият акаунт очаква одобряване.";
                     return RedirectToAction("Index", "Home");
 
                 case LoginResult.Success:
-                    TempData["success"] = "Successful login.";
+                    TempData["success"] = "Успешно влизане.";
                     return RedirectToAction("Index", "Home");
 
                 case LoginResult.Fail:
-                    TempData["error"] = "Unsuccessful login.";
+                    TempData["error"] = "Неуспешно влизане.";
                     return RedirectToAction("Index", "Home");
 
                 default:
@@ -89,7 +89,7 @@ namespace KursovaRabota.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["error"] = "Unsuccessful register!";
+                TempData["error"] = "Неуспешна регистрация!";
                 return View(model);
             }
 
@@ -119,7 +119,7 @@ namespace KursovaRabota.Controllers
             if (result.Succeeded)
             {
                 await userManager.AddToRoleAsync(user, model.DesiredRole);
-                TempData["success"] = "Successful registration!";
+                TempData["success"] = "Успешна регистрация!";
                 return RedirectToAction(nameof(Login));
             }
 
